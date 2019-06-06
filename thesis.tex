@@ -25,6 +25,15 @@
 \usepackage{multirow}
 \usepackage{tabularx}
 
+\usepackage[version=3]{mhchem}
+\usepackage[T1]{fontenc}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{xr-hyper}
+%\usepackage{hyperref}
+\usepackage{float}
+\usepackage{xcolor}
+    
+
 % plainpages=false fixes the "duplicate ignored" error with page counters
 % Set pdfborder to 0 0 0 to disable colored borders around PDF hyperlinks
 \usepackage[plainpages=false,pdfborder={0 0 0}]{hyperref}
@@ -43,7 +52,7 @@
 % having to use LaTeX's awkward escape syntax (e.g., \'{e})
 % NOTE: You may have to install the ucs.sty package for this to work. See:
 % http://www.unruh.de/DniQ/latex/unicode/
-%\usepackage[utf8x]{inputenc}
+\usepackage[utf8x]{inputenc}
 
 % Uncomment the following to avoid "widowing", where page breaks cause
 % single lines of paragraphs to float onto the next page (this is not
@@ -64,6 +73,10 @@
 	pdftitle={Molecular simulations and binding free energy calculations for drug discovery},
 	pdfauthor={Nathan M. Lim},
 	pdfsubject={Pharmaceutical Sciences},
+	colorlinks,
+    linkcolor={black!50!black},
+    citecolor={blue!80!black},
+    urlcolor={blue!80!black}
 }
 
 % Uncomment the following to have numbered subsubsections (by default
@@ -85,7 +98,8 @@
 % Include the different components of your thesis, in separate files.
 % Using \include allows you to set \includeonly above.
 \include{chapter1}
-%\include{chapter2}
+\include{T4supp}
+\include{chapter2}
 % ... and so on
 
 % These commands fix an odd problem in which the bibliography line
