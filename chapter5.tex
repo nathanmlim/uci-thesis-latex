@@ -1,157 +1,13 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% This is a (brief) model paper using the achemso class
-%% The document class accepts keyval options, which should include
-%% the target journal and optionally the manuscript type. 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[journal=jcisd8,manuscript=article]{achemso}
+\chapter{Microsecond molecular dynamics simulations for fragment pose prediction} \label{SEH-MD}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Place any additional packages needed here.  Only include packages
-%% which are essential, to avoid problems later. Do NOT use any
-%% packages which require e-TeX (for example etoolbox): the e-TeX
-%% extensions are not currently available on the ACS conversion
-%% servers.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{graphicx}
-\usepackage[table,xcdraw]{xcolor}
-\usepackage{subcaption}
-\usepackage{xr-hyper}
-\usepackage{hyperref}
-\usepackage{microtype}
-\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
-\PassOptionsToPackage{hyphens}{url}
-\usepackage{lmodern}
-\usepackage{amssymb,amsmath}
-\usepackage{ifxetex,ifluatex}
-\raggedbottom
-
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provides euro and other symbols
-\else % if luatex or xelatex
-  \usepackage{unicode-math}
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
-\fi
-\usepackage{longtable,booktabs}
-\usepackage{graphicx,grffile}
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-\setlength{\emergencystretch}{3em}  % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{0}
-% Redefines (sub)paragraphs to behave more like sections
-\ifx\paragraph\undefined\else
-\let\oldparagraph\paragraph
-\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
-\fi
-\ifx\subparagraph\undefined\else
-\let\oldsubparagraph\subparagraph
-\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
-\fi
-
-% set default figure placement to htbp
-\makeatletter
-\def\fps@figure{htbp}
-\makeatother
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% If issues arise when submitting your manuscript, you may want to
-%% un-comment the next line.  This provides information on the
-%% version of every file you have used.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%\listfiles
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Place any additional macros here.  Please use \newcommand* where
-%% possible, and avoid layout-changing macros (which are not used
-%% when typesetting).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand*\mycommand[1]{\texttt{\emph{#1}}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Meta-data block
-%% ---------------
-%% Each author should be given as a separate \author command.
-%%
-%% Corresponding authors should have an e-mail given after the author
-%% name as an \email command. Phone and fax numbers can be given
-%% using \phone and \fax, respectively; this information is optional.
-%%
-%% The affiliation of authors is given after the authors; each
-%% \affiliation command applies to all preceding authors not already
-%% assigned an affiliation.
-%%
-%% The affiliation takes an option argument for the short name.  This
-%% will typically be something like "University of Somewhere".
-%%
-%% The \altaffiliation macro should be used for new address, etc.
-%% On the other hand, \alsoaffiliation is used on a per author basis
-%% when authors are associated with multiple institutions.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\author{Linh P. Nguyen}
-\author{Nathan M. Lim}
-\author{Gregory Warren}
-\author{David L. Mobley}
-\affiliation[University of California---Irvine]
-{Department of Pharmaceutical Sciences, University of California---Irvine, Irvine, California 92697, United States}
-\email{dmobley@mobleylab.org}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% The document title should be given as usual. Some journals require
-%% a running title from the author: this should be supplied as an
-%% optional argument to \title.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{Microsecond molecular dynamics simulations for fragment pose prediction}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Some journals require a list of abbreviations or keywords to be
-%% supplied. These should be set up here, and will be printed after
-%% the title and author information, if needed.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\abbreviations{IR,NMR,UV,MD}
-\keywords{American Chemical Society, \LaTeX}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% The manuscript does not need to include \maketitle, which is
-%% executed automatically.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{document}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% The "tocentry" environment can be used to create an entry for the
-%% graphical table of contents. It is given here as some journals
-%% require that it is printed as part of the abstract page. It will
-%% be automatically moved as appropriate.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{tocentry}
-Some journals require a graphical entry for the Table of Contents.
-This should be laid out ``print ready'' so that the sizing of the
-text is correct.
-
-Inside the \texttt{tocentry} environment, the font used is Helvetica
-8\,pt, as required by \emph{Journal of the American Chemical
-Society}.
-
-The surrounding frame is 9\,cm by 3.5\,cm, which is the maximum
-permitted for  \emph{Journal of the American Chemical Society}
-graphical table of content entries. The box will not resize if the
-content is too big: instead it will overflow the edge of the box.
-
-This box and the associated title will always be printed on a
-separate page at the end of the document.
-\end{tocentry}
+\small{Authors: Linh P. Nguyen*, Nathan M. Lim*, Gregory Warren, David L. Mobley}\\
+\small{\textit{* denotes co-authorship}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% The abstract environment will automatically gobble the contents
 %% if an abstract is not used by the target journal.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{abstract}
+\section*{Abstract}
 One of the major challenges medicinal chemists face in early drug discovery is the determination of ligand binding modes.
 By understanding how a ligand orients itself within a binding site, chemists can gain insight on key interactions for binding and may begin to rationalize how to improve or design a potential lead compound. 
 In this retrospective blinded study, we apply routine computational methods such as docking and molecular dynamics (MD) simulations to identify the binding modes on a set of fragment-like molecules bound to soluble epoxide hydrolase (sEH).
@@ -161,7 +17,6 @@ To define ligand binding modes from our MD simulations, we construct Markov stat
 We are particularly interested in determining whether exchanges between different stable binding modes can happen an adequate number of times at this timescale.
 Given that these molecules are small and fragment-like, we expect switching of binding modes to occur relatively more quickly than typical drugs or biomolecules.
 In this study, even with simulations at the microsecond timescale for small fragment-like molecules, we do not observe sufficient enough transitions to adequately sample and identify all crystallographic binding modes. 
-\end{abstract}
 
 \section{Introduction}
 Early stage drug discovery commonly employs high-throughput screening (HTS), where millions of molecules (from small fragments to drug-like compounds) are screened against a target of interest to reveal potential hits.
@@ -228,8 +83,8 @@ We aim to provide some insight to determine how effective computational methods 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{Figures/backbonermsd.pdf}
-    \caption{RMSD of the SEH backbone, relative to the starting positions, after deleting the N terminal domain over the course of an 80ns MD simulation, averaging at 1.8{\AA}}
+    \includegraphics[width=\linewidth]{chapter5/Figures/backbonermsd.pdf}
+    \caption[SEH Backbone RMSD]{RMSD of the SEH backbone, relative to the starting positions, after deleting the N terminal domain over the course of an 80ns MD simulation, averaging at 1.8{\AA}}
     \label{fig:backbonermsd}
 \end{figure}
 Information given to us by our OpenEye scientific collaborators (Christopher Bayly and Gregory Warren) consisted of the apo-protein SEH structure, the binding site in which to dock, the set of ligands to dock (given as SMILES strings), and the protein-ligand crystal structures after refinement by Warren.
@@ -258,15 +113,15 @@ The remainder of the molecules will be reserved for subsequent studies.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{Figures/seh-binding-site.png}
-    \caption{Soluble Epoxide hydrolase binding site divided by the center cleft, defining two sub cavities denoted as left and right. As we rarely observed transitions between the two sub-caivities, we conduct our analysis of binding modes within each sub-cavity, shown here. }
+    \includegraphics[width=\linewidth]{chapter5/Figures/seh-binding-site.png}
+    \caption[SEH Binding Site]{Soluble Epoxide hydrolase binding site divided by the center cleft, defining two sub cavities denoted as left and right. As we rarely observed transitions between the two sub-caivities, we conduct our analysis of binding modes within each sub-cavity, shown here.}
     \label{fig:sEH-ribbon}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics{Figures/2d-molecules.png}
-    \caption{2D representations of the ligands used in this study. Each molecule is identified by a 3 character code, where alternate protonation states of select ligands are denoted with a 4 character code (i.g. GVG1/2, and 6TZ1/2). These codes are given to us by Warren.}
+    \includegraphics{chapter5/Figures/2d-molecules.png}
+    \caption[SEH 2D Ligand Representation]{2D representations of the ligands used in this study. Each molecule is identified by a 3 character code, where alternate protonation states of select ligands are denoted with a 4 character code (i.g. GVG1/2, and 6TZ1/2). These codes are given to us by Warren.}
     \label{fig:2D-molecules}
 \end{figure}
 
@@ -285,8 +140,8 @@ With enough simulation time, we expect the fragments to be able to transition be
 
 \begin{figure}
     \centering
-    \includegraphics{Figures/topscore-rmsd.png}
-    \caption{Relationship between the top scoring pose from docking and RMSD to the crystallographic binding mode. Scores from docking do not correlate with the closeness to the crystallographic pose.}
+    \includegraphics[width=\linewidth]{chapter5/Figures/topscore-rmsd.png}
+    \caption[RMSD of Top Scoring Docked Poses]{Relationship between the top scoring pose from docking and RMSD to the crystallographic binding mode. Scores from docking do not correlate with the closeness to the crystallographic pose.}
     \label{fig:topscore_correlation}
 \end{figure}
 
@@ -295,7 +150,7 @@ Figure \ref{fig:topscore_correlation}, illustrates the calculated RMSD of the to
 This finding validates our choice to utilize manual selection of the docked poses for starting our MD simulations.
 
 \subsection{Molecular Dynamics}
-The system, compromising of only the C-terminal domain, was parameterized using amber99sbildn force field for the protein \cite{}, the TIP3P water model \cite{} for the solvent, and GAFF2 force field for the ligands \cite{lindorff-larsen_improved_2010}.
+The system, compromising of only the C-terminal domain, was parameterized using amber99sbildn force field for the protein \cite{wang2004development}, the TIP3P water model \cite{jorgensen1983comparison} for the solvent, and GAFF2 force field for the ligands \cite{lindorff-larsen_improved_2010}.
 The following stages were carried out using OpenMM (version 7.1.1) \cite{eastman_openmm_2017,eastman_openmm_2013}.
 A maximum of 30,000 minimization steps was applied and the protein-ligand system was equilibrated for 10ps at 1 atm, 300K, and a pH of 8.5 in three stages where the restraint force used to keep the ligand and protein in their starting positions is decreased with each progressing stage. 
 The restraint force constant for each progressive stage was $2.0 \frac{kcal}{mol \cdot \mbox{\AA} ^{2}}$, $0.5 \frac{kcal}{mol \cdot \mbox{\AA} ^{2}}$, and $0.1 \frac{kcal}{mol \cdot \mbox{\AA} ^{2}}$, respectively. 
@@ -311,8 +166,8 @@ Analysis was conducted on the entirety of the 1 microsecond simulation, with tra
 
 \begin{figure}
     \centering
-    \includegraphics{II6/II6_1-full-tiCA.png}
-    \caption{TICA analysis of the conformational dynamics of ligand II6 during a 1 microsecond MD simulation yields three possible metastable binding modes as recognized by the (blue, violet, or black) metastable free energy basins.}
+    \includegraphics{chapter5/II6/II6_1-full-tiCA.png}
+    \caption[TICA Analysis of Ligand II6]{TICA analysis of the conformational dynamics of ligand II6 during a 1 microsecond MD simulation yields three possible metastable binding modes as recognized by the (blue, violet, or black) metastable free energy basins.}
     \label{fig:II6_1_tica-kmeans}
 \end{figure}
 
@@ -323,8 +178,8 @@ After applying a tICA transformation on the distances from the closest heavy lig
 
 \begin{figure}
     \centering
-    \includegraphics{II6/II6_1-full-tiCA-PCCA.png}
-    \caption{Ligand II6 TICA coordinates plot with marked discrete microstates colored to indicate different clusters which define our metastable macrostates or stable ligand binding modes. Adjacent macrostates suggest possible transitions between binding modes.}
+    \includegraphics{chapter5/II6/II6_1-full-tiCA-PCCA.png}
+    \caption[PCCA Analysis of Ligand II6]{Ligand II6 TICA coordinates plot with marked discrete microstates colored to indicate different clusters which define our metastable macrostates or stable ligand binding modes. Adjacent macrostates suggest possible transitions between binding modes.}
     \label{fig:II6_1-TICA-PCCA}
 \end{figure}
 
@@ -335,7 +190,7 @@ For each macrostate, we store 100 frames to represent our metastable binding mod
 
 \begin{figure}
     \centering
-    \includegraphics{II6/II6_1-full-implied-timescale.png}
+    \includegraphics{chapter5/II6/II6_1-full-implied-timescale.png}
     \caption[SEH Implied Timescales]{Relaxation timescales of ligand II6 implied by a Markov model transition matrix estimated at various lag times up to 300ps. Implied timescales should be independent of the lag time and appear to converge at 100ps. With increasing lag time, implied timescales become more constant. The black line with gray area defines the limit of the timescale at which the model can be resolved, where any processes within this area are generally not resolved. With increasing lag time, more process are not resolved. All the processes for II6 are well resolved. Solid lines correspond to the maximum likelihood MSMs. Shaded areas depict confidence intervals containing 95 percent of the samples generated by Bayesian MSM. The confidence intervals remain constant with increasing lag time for II6. Dashed lines correspond to samples means. }
     \label{fig:II6-implied}
 \end{figure}
@@ -347,8 +202,8 @@ A lag time of 300ps was selected as the implied timescale appeared to become ind
 
 \begin{figure}
     \centering
-    \includegraphics{II6/II6_1-full-spectra.png}
-    \caption{Ligand II6 number of clusters against their respective MSM timescales. With increased clusters, the duration of the timescale each cluster represents decreases. Using the elbow method, we select the number of clusters that will best separate the discrete microstates into macrostates. A suitable number of clusters appears to be 3 clusters. }
+    \includegraphics{chapter5/II6/II6_1-full-spectra.png}
+    \caption[Spectral Analysis of Ligand II6]{Ligand II6 number of clusters against their respective MSM timescales. With increased clusters, the duration of the timescale each cluster represents decreases. Using the elbow method, we select the number of clusters that will best separate the discrete microstates into macrostates. A suitable number of clusters appears to be 3 clusters. }
     \label{fig:II6_1-spectral}
 \end{figure}
 
@@ -386,7 +241,7 @@ Given that we do not know ahead of time which docked pose or simulation frame wo
 \subsection{Single binding mode predictions}
 \begin{figure}
     \centering
-    \includegraphics{Figures/cluster3_seh_singlebm.png}
+    \includegraphics[width=\linewidth]{chapter5/Figures/cluster3_seh_singlebm.png}
     \caption[SEH MD Single Binding Mode Ligands]{RMSD between crystallographic ligand binding mode and predicted binding mode from docking (blue) and MD (green) for cases with a single crystallographic binding mode. Ligand RMSD values are sorted in ascending order according to MD RMSD. We judge success as predicting a binding mode to be less than or equal to 2 {\AA} (black dashed horizontal line). For ligands with single binding modes, MD simulations generally improve RMSD values from docking.}
     \label{fig:rmsd-singlebm}
 \end{figure}
@@ -424,7 +279,7 @@ The average MD RMSD for molecules with a single binding mode was $4.3 \pm 1.0 {\
 \subsection{Dual binding mode predictions}
 \begin{figure}
     \centering
-    \includegraphics{Figures/cluster3_seh_dualbm.png}
+    \includegraphics[width=\linewidth]{chapter5/Figures/cluster3_seh_dualbm.png}
     \caption[SEH MD Dual Binding Mode Ligands]{RMSD between crystallographic ligand binding modes and predicted binding modes from docking (blue) and MD (green) for cases with dual crystallographic binding modes. We judge success as predicting a binding mode to be less than or equal to 2 {\AA} (black dashed horizontal line). }
     \label{fig:rmsd-dualbm}
 \end{figure}
@@ -465,7 +320,7 @@ The average MD RMSD for the molecules with multiple binding modes was $7.3 \pm 0
 
 \begin{figure}
     \centering
-    \includegraphics{Figures/cluster3_seh_multibm.png}
+    \includegraphics[width=\linewidth]{chapter5/Figures/cluster3_seh_multibm.png}
     \caption[SEH MD Multi Binding Mode Ligands]{RMSD between crystallographic ligand binding modes and predicted binding modes from docking (blue) and MD (green) for cases with multiple crystallographic binding modes. We judge success as predicting a binding mode to be less than or equal to 2 {\AA} (black dashed horizontal line).}
     \label{fig:rmsd-multibm}
 \end{figure}
@@ -500,7 +355,7 @@ The average MD RMSD for the molecules with multiple binding modes was $7.3 \pm 0
 \textbf{KUF-4}  & 13.4          & 0.0              & NF          & NF             \\ \hline
 \textbf{KUF-5}  & 13.1          & 0.0              & NF          & NF             \\ \hline
 \end{tabular}
-\caption{Average RMSDs and error {\AA} for molecules with two binding modes. NF indicates that the binding mode was not found.}
+\caption[Average RMSDs and error {\AA} for molecules with multiple binding modes.]{Average RMSDs and error {\AA} for molecules with multiple binding modes. NF indicates that the binding mode was not found.}
 \label{table:multibm}
 \end{table}
 
@@ -534,7 +389,7 @@ We believe that given more simulation time for the other molecules, we would obs
 
 \begin{figure}
     \centering
-    \includegraphics{II6/II6_1-full-bmodes-freq.png}
+    \includegraphics{chapter5/II6/II6_1-full-bmodes-freq.png}
     \caption[Ligand II6 Binding Mode Populations]{Top: Populations (\% simulation time) of 3 (red, green, blue) binding modes sampled in 1 microsecond of MD for ligand II6. Bottom: RMSD of ligand II6 relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:II6_bmodes}
 \end{figure}
@@ -550,7 +405,7 @@ This (blue) binding mode from MD was 1.8 {\AA} away from the crystallographic po
 
 \begin{figure}
     \centering
-    \includegraphics{II6/BR-II6_1-pcca2-CL.png}
+    \includegraphics[width=\linewidth]{chapter5/II6/BR-II6_1-pcca2-CL.png}
     \caption[Ligand II6 with crystal structure]{The dominant binding mode for ligand II6 represented in orange and the crystallographic pose II6 in gray.}
     \label{fig:II6_pcca2}
 \end{figure}
@@ -565,7 +420,7 @@ For these cases, ligand stabilization into the dominant binding mode often occur
 
 \begin{figure}
     \centering
-    \includegraphics{JF6/JF6_1_c0-full-bmodes-freq.png}
+    \includegraphics[width=\linewidth]{chapter5/JF6/JF6_1_c0-full-bmodes-freq.png}
     \caption[Ligand JF6 Binding Mode Populations]{Top: Populations (\% simulation time) of 2 (red and green) binding modes sampled in 1 microsecond of MD for ligand JF6. Bottom: RMSD of ligand JF6 relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:JF6_bmodes}
 \end{figure}
@@ -590,7 +445,7 @@ On average, docking generated poses which were 8.4 {\AA} from 6NX-0 and 9.1 {\AA
 
 \begin{figure}
     \centering
-    \includegraphics{6NX/6NX-docked-label.png}
+    \includegraphics[width=\linewidth]{chapter5/6NX/6NX-docked-label.png}
     \caption[Ligand 6NX Docked Poses]{Ligand 6NX in the 3 chosen docked poses 6NX-c0 (right), 6NX-c1 (left), and 6NX-c2 (left) used to start our MD simulations.}
     \label{fig:6NX-docked}
 \end{figure}
@@ -602,7 +457,7 @@ The populations of 6NX-c1 and 6NX-c2 are combined to yield red, green, and blue 
 
 \begin{figure}
     \centering
-    \includegraphics{6NX/6NX_1_c2-full-bmodes-freq.png}
+    \includegraphics[width=\linewidth]{chapter5/6NX/6NX_1_c2-full-bmodes-freq.png}
     \caption[Ligand 6NX pose 2 Binding Mode Populations]{Top: Populations (\% simulation time) of 1 (blue) binding modes sampled in 1 microsecond of MD for ligand 6NX (pose 2). Bottom: RMSD of ligand 6NX relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:6NX_c2_bmodes}
 \end{figure}
@@ -613,7 +468,7 @@ By chance, the docked pose 6NX-c2 we selected as a starting point for our MD sim
 
 \begin{figure}
     \centering
-    \includegraphics{6NX/6NX_1_c1-full-bmodes-freq.png}
+    \includegraphics[width=\linewidth]{chapter5/6NX/6NX_1_c1-full-bmodes-freq.png}
     \caption[Ligand 6NX pose 1 Binding Mode Populations]{Top: Populations (\% simulation time) of 2 (red/green) binding modes sampled in 1 microsecond of MD for ligand 6NX (pose 1). Bottom: RMSD of ligand 6NX relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:6NX_c1_bmodes}
 \end{figure}
@@ -660,31 +515,11 @@ In this study, we show that even when simulating small fragment-like molecules i
 This illus rates that convergence, solely with MD simulations, is very slow and highlights the necessity of using an enhanced sampling technique to adequately sample and determine ligand binding modes.
 We plan to explore these issues in future work.
 
-\section{Contributors}
-Christopher Bayly -- OpenEye Scientific, provided MD Floes
-Gaetano Calabro -- OpenEye Scientific, provided MD Floes
-Greg Warren -- OpenEye Scientific,  curated crystal structures
+% \section{Contributors}
+% Christopher Bayly -- OpenEye Scientific, provided MD Floes
+% Gaetano Calabro -- OpenEye Scientific, provided MD Floes
+% Greg Warren -- OpenEye Scientific,  curated crystal structures
 
-\section{Potential Journals}
-Journal of Chemical Information and Modelling
-
-\bibliography{references}
-
-\end{document}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% The "Acknowledgement" section can be given in all manuscript
-%% classes.  This should be given within the "acknowledgement"
-%% environment, which will make the correct section or running title.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{acknowledgement}
-
-Please use ``The authors thank \ldots'' rather than ``The
-authors would like to thank \ldots''.
-
+\section{Acknowledgements}
 DLM appreciates financial support from the National Institutes of Health (1R01GM108889-01 and 1R01GM124270-01A1). Financial support for N.M.L. was provided by the National Science Foundation Graduate Research Fellowship (DGE-1321846)
 
-\end{acknowledgement}
-
-
-%NML: Add starting simulation poses and the final binding modes and example notebook.
