@@ -1,0 +1,56 @@
+\chapter{Designing an extensible tool for accelerating sampling and predicting ligand binding modes and affinities.} \label{BLUES}
+
+\section{Introduction}
+Our hypothesis is that utilizing the NCMC \cite{Nilmeier08112011} framework with MD simulations will dramatically enhance sampling of ligand binding modes, allowing prediction of the most favorable binding pose or poses.
+We are developing a method known as BLUES (Binding mode of Ligands Using Enhanced Sampling) \cite{BLUESpaper}, which provides a way to move the ligand into alternate poses and subsequently allows the system to relax to the new ligand position in a MD simulation.
+
+During a MD simulation, BLUES will perform a random rotation of the bound ligand and then allow the system to relax through alchemically scaling off/on the ligand-receptor interactions.
+The thermodynamic work required in turning on the ligand interactions---in its newly rotated position---is then used to accept or reject the rotational move based on the Metropolis acceptance criterion \cite{hastings1970monte} which ensures the condition of "detailed balance" is met.
+Put alternatively, proposed moves are accepted or rejected with certain probabilities such that the system will eventually visit states with the correct equilibrium distribution of populations.
+We can then compute the relative binding free energies of different binding modes from the binding mode populations (i.e time spent in each pose) that were randomly `explored' by the ligand over the simulation.
+
+Thus, this method can be used to determine where the fragment tends to bind and its most favorable binding mode.
+Specifically, this approach can be used for identifying and ranking favorable binding modes, such as from fragment-based screening or poses for use in binding free energy predictions.
+The application of the BLUES simulation package for fragment binding mode prediction will be discussed in the final chapter.
+In this chapter, I present work done in designing the BLUES simulation package to ensure the software can be easily extended for other use cases and discuss design principles which were implemented to ensure the software can be easily maintained.
+
+\section{BLUES Software Design Principles}
+BLUES\cite{BLUESGitHub} is a freely available toolkit designed as an extension for OpenMM \cite{eastman2010openmm}.
+Again, the toolkit utilizes a hybrid simulation approach which combines MD simulations and the NCMC \cite{Nilmeier08112011} framework to enhance ligand binding mode sampling.
+Our recent study \cite{BLUESpaper} indicates more than a 100x speed up in pose sampling over traditional MD simulations from performing random rotational moves on a small and rigid ligand bound in a simple model system.
+BLUES with random ligand rotations has more recently been used to study and identify the binding modes of caffeine \cite{BLUEScaffeine} and fragment binding modes to soluble epoxide hydrolase \cite{}.
+
+A significant amount my work involved incorporating the best practices in software development as outlined by the Molecular Sciences Software Institute \cite{molssi}.
+These best practices include: (1) version control, (2) testing and code coverage, (3) continuous integration, (4) automated build systems, (5) standardized code style, and (6) documentation.
+These best practices are discussed and presented in the following sections.
+
+
+\subsection{GitHub and Travis-CI}
+GitHub is a website and a service which allows users to publicly store and host their software packages, like our BLUES package.
+By hosting the BLUES software through GitHub, we incorporate some of the best practices (1-4) in software design.
+GitHub uses `git', an open source version control software which keeps track of any changes made to the code.
+Version control is not only important for having a history all your changes as the project progresses, but it also provides a way to ensure collaborators are all using the same version.
+
+BLUES has been designed to be as modular as possible, meaning there are a lot of different pieces that all work together in order to execute the simulation.
+As different pieces of the code must interact with each other, this effectively means that changes made in one part of the code base can affect other parts of the code.
+This highlights the importance of keeping the code tested, which I have done through writing tests for nearly every function found in the BLUES code base (also called unit testing).
+When a change is made in one part of the code, the unit tests ensure that the new changes haven't affected anything other functions.
+
+Travis-CI is a continuous integration service that is linked GitHub; this allows for automatic building and testing of the BLUES software package on a variety of platforms.
+When new code is added to the public repository, Travis-CI gets triggered to build the software package and run the unit tests.
+Building and testing for different platforms helps to ensure that the code will run on the end users machine.
+When the software package is marked as a release candidate, the continuous integration pipeline will upload the built packages onto Anaconda Cloud--a python package management service that facilitates easy installation and trigger generating the documentation on ReadTheDocs.
+
+In summary, I have designed BLUES to utilize many of the features and services provided by GitHub and Travis-CI to ensure the software abides by good software design principles.
+Hosting the BLUES software package on GitHub makes it publicly available, version controlled and connects with the Travis-CI service.
+The Travis-CI service provides automated building and testing of BLUES software package, making sure that future changes do not break the core functionality of the code base. 
+
+\subsection{ReadTheDocs}
+ReadTheDocs is a website and service which provides automatic building, versioning, and hosting--much like GitHub--except for the documentation.
+Documentation is critical for not only the code's longevity, but goes towards making the code more accessible and usable by others.
+Documentation includes: (1) in-code docstrings which details how to use each module, class, and function ; (2) installation instructions; (3) usage examples and (4) guidelines for further development.
+These rules for documentation were followed when writing the documentation for BLUES which is available on ReadTheDocs. 
+The following sections are excerpts from the BLUES documentation which help to explain how to install the software (Sec. \ref{source-installation}), use the software package (Sec. \ref{usage}), documentation on individual modules (Sec. \ref{modules}), and design principles implemented in BLUES (Sec. \ref{developer-guide}).
+The complete documentation can be found on ReadTheDocs ( https://mobleylab-blues.readthedocs.io/en/master/).
+
+

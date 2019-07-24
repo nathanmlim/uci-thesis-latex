@@ -1,0 +1,60 @@
+\hypertarget{installation}{%
+\section{Installation}\label{installation}}
+
+BLUES is compatible with MacOSX/Linux with Python\textgreater=3.6
+(blues\textless1.1 still works with Python 2.7)
+
+This is a python tool kit with a few dependencies. We recommend
+installing \href{http://conda.pydata.org/miniconda.html}{miniconda}.
+Then you can create an environment with the following commands:
+
+\begin{minted}[breaklines]{python}
+conda create -n blues python=3.6
+conda activate blues
+\end{minted}
+
+\hypertarget{stable-releases}{%
+\subsection*{Stable Releases}\label{stable-releases}}
+
+The recommended way to install BLUES would be to install from conda.
+
+\begin{minted}[breaklines]{bash}
+conda install -c mobleylab blues
+\end{minted}
+
+\hypertarget{development-builds}{%
+\subsection*{Development Builds}\label{development-builds}}
+
+Alternatively, you can install the latest development build. Development
+builds contain the latest commits/PRs not yet issued in a point release.
+
+\begin{minted}[breaklines]{bash}
+conda install -c mobleylab/label/dev blues
+\end{minted}
+
+In order to use the {SideChainMove} class you will need OpenEye Toolkits
+and some related tools.
+
+\begin{minted}[breaklines]{bash}
+conda install -c openeye/label/Orion -c omnia oeommtools packmol
+conda install -c openeye openeye-toolkits
+\end{minted}
+
+\hypertarget{source-installation}{%
+\subsection*{Source Installation}\label{source-installation}}
+
+Although we do NOT recommend it, you can also install directly from the
+source code.
+
+\begin{minted}[breaklines]{bash}
+git clone https://github.com/MobleyLab/blues.git
+conda install -c omnia -c conda-forge openmmtools openmm numpy cython
+pip install -e .
+\end{minted}
+
+To validate your BLUES installation run the tests.
+
+\begin{minted}[breaklines]{bash}
+pip  install -e .[tests]
+pytest -v -s 
+\end{minted}

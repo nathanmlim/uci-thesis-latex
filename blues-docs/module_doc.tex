@@ -1,0 +1,1629 @@
+\hypertarget{modules}{%
+\section{Modules}\label{modules}}
+
+
+\hypertarget{nonequilibrium-candidate-monte-carlo-ncmc}{%
+\subsection{Nonequilibrium Candidate Monte Carlo (NCMC)}\label{nonequilibrium-candidate-monte-carlo-ncmc}}
+
+Provides moves and classes for running the BLUES simulation.
+
+\hypertarget{reportlangevindynamicsmove}{%
+\subsubsection{ReportLangevinDynamicsMove}\label{reportlangevindynamicsmove}}
+
+\begin{minted}[breaklines]{python}
+class blues.ncmc.ReportLangevinDynamicsMove(n_steps=1000, timestep=Quantity(value=2.0, unit=femtosecond), collision_rate=Quantity(value=1.0, unit=/picosecond), reassign_velocities=True, context_cache=None, reporters=[])
+'''
+Langevin dynamics segment as a (pseudo) Monte Carlo move.
+
+This move class allows the attachment of a reporter for storing the data
+from running this segment of dynamics.This move assigns a velocity from the
+Maxwell-Boltzmann distribution and executes a number of Maxwell-Boltzmann
+steps to propagate dynamics. This is not a true Monte Carlo move, in that
+the generation of the correct distribution is only exact in the limit of
+infinitely small timestep; in other words, the discretization error is
+assumed to be negligible. Use HybridMonteCarloMove instead to ensure
+the exact distribution is generated.
+
+Warning: No Metropolization is used to ensure the correct phase space
+distribution is sampled. This means that timestep-dependent errors will
+remain uncorrected, and are amplified with larger timesteps.
+Use this move at your own risk!
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{n\_steps} (\emph{int, optional}) -- The number of integration
+  timesteps to take each time the move is applied (default is 1000).
+\item
+  \textbf{timestep} (\emph{simtk.unit.Quantity, optional}) -- The
+  timestep to use for Langevin integration (time units, default is
+  1*simtk.unit.femtosecond).
+\item
+  \textbf{collision\_rate} (\emph{simtk.unit.Quantity, optional}) -- The
+  collision rate with fictitious bath particles (1/time units, default
+  is 10/simtk.unit.picoseconds).
+\item
+  \textbf{reassign\_velocities} (\emph{bool, optional}) -- If True, the
+  velocities will be reassigned from the Maxwell-Boltzmann distribution
+  at the beginning of the move (default is False).
+\item
+  \textbf{context\_cache} (\emph{openmmtools.cache.ContextCache,
+  optional}) -- The ContextCache to use for Context creation. If None,
+  the global context cache is used (default is None).
+\item
+  \textbf{reporters} (\emph{list}) -- A list of the storage classes
+  inteded for reporting the simulation data. This can be either
+  blues.storage.(NetCDF4Storage/BLUESStateDataStorage).
+\end{itemize}
+\end{description}
+
+\begin{description}
+\item[Methods]
+\item
+    \begin{minted}[breaklines]{python}
+    def apply(thermodynamic_state, sampler_state):
+        '''
+        Propagate the state through the integrator.
+        This updates the SamplerState after the integration.
+        '''
+    \end{minted}
+    
+    \begin{description}
+    \item
+        \textbf{Parameters}
+    \begin{itemize}
+    \item
+      \textbf{thermodynamic\_state}
+      (\emph{openmmtools.states.ThermodynamicState}) -- The thermodynamic
+      state to use to propagate dynamics.
+    \item
+      \textbf{sampler\_state} (\emph{openmmtools.states.SamplerState}) --
+      The sampler state to apply the move to. This is modified.
+    \end{itemize}
+    \end{description}
+\end{description}
+
+\begin{description}
+\item
+    \textbf{Example}
+
+First we need to create the thermodynamic state and the sampler state to
+propagate. Here, we create an alanine dipeptide system in vacuum.
+
+\begin{minted}[breaklines]{python}
+from simtk import unit
+from openmmtools import testsystems
+from openmmtools.states import SamplerState, ThermodynamicState
+test = testsystems.AlanineDipeptideVacuum()
+sampler_state = SamplerState(positions=test.positions)
+thermodynamic_state = ThermodynamicState(system=test.system, temperature=298*unit.kelvin)
+\end{minted}
+
+Create reporters for storing our simulation data.
+
+\begin{minted}[breaklines]{python}
+from blues.storage import NetCDF4Storage, BLUESStateDataStorage
+nc_storage = NetCDF4Storage('test-md.nc',
+                            reportInterval=5,
+                            crds=True, vels=True, frcs=True)
+state_storage = BLUESStateDataStorage('test.log',
+                                      reportInterval=5,
+                                      step=True, time=True,
+                                      potentialEnergy=True,
+                                      kineticEnergy=True,
+                                      totalEnergy=True,
+                                      temperature=True,
+                                      volume=True,
+                                      density=True,
+                                      progress=True,
+                                      remainingTime=True,
+                                      speed=True,
+                                      elapsedTime=True,
+                                      systemMass=True,
+                                      totalSteps=10)
+\end{minted}
+
+Create a Langevin move with default parameters
+
+\begin{minted}[breaklines]{python}
+move = ReportLangevinDynamicsMove()
+\end{minted}
+
+or create a Langevin move with specified parameters.
+
+\begin{minted}[breaklines]{python}
+move = ReportLangevinDynamicsMove(timestep=0.5*unit.femtoseconds,
+                                      collision_rate=20.0/unit.picoseconds, n_steps=10,
+                                      reporters=[nc_storage, state_storage])
+\end{minted}
+
+Perform one update of the sampler state. The sampler state is updated
+with the new state.
+
+\begin{minted}[breaklines]{python}
+move.apply(thermodynamic_state, sampler_state)
+np.allclose(sampler_state.positions, test.positions)
+>>> False
+\end{minted}
+
+The same move can be applied to a different state, here an ideal gas.
+
+\begin{minted}[breaklines]{python}
+test = testsystems.IdealGas()
+sampler_state = SamplerState(positions=test.positions)
+thermodynamic_state = ThermodynamicState(system=test.system,
+                                          temperature=298*unit.kelvin)
+move.apply(thermodynamic_state, sampler_state)
+np.allclose(sampler_state.positions, test.positions)
+>>> False
+\end{minted}
+\end{description}
+
+\hypertarget{ncmcmove}{%
+\subsubsection{NCMCMove}\label{ncmcmove}}
+
+\begin{minted}[breaklines]{python}
+class blues.ncmc.NCMCMove(n_steps=1000, timestep=Quantity(value=2.0, unit=femtosecond), atom_subset=None, context_cache=None, nprop=1, propLambda=0.3, reporters=[])
+'''
+A general NCMC move that applies an alchemical integrator.
+
+This class is intended to be inherited by NCMCMoves that need to
+alchemically modify and perturb part of the system. The child class has
+to implement the _propose_positions() method. Reporters can be attached
+to report data from the NCMC part of the simulation.
+
+You can decide to override _before_integration() and
+_after_integration() to execute some code at specific points of the
+workflow, for example to read data from the Context before the it is
+destroyed.
+'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{n\_steps} (\emph{int, optional}) -- The number of integration
+  timesteps to take each time the move is applied (default is 1000).
+\item
+  \textbf{timestep} (\emph{simtk.unit.Quantity, optional}) -- The
+  timestep to use for Langevin integration (time units, default is
+  1*simtk.unit.femtosecond).
+\item
+  \textbf{atom\_subset} (\emph{slice or list of int, optional}) -- If
+  specified, the move is applied only to those atoms specified by these
+  indices. If None, the move is applied to all atoms (default is None).
+\item
+  \textbf{context\_cache} (\emph{openmmtools.cache.ContextCache,
+  optional}) -- The ContextCache to use for Context creation. If None,
+  the global context cache is used (default is None).
+\item
+  \textbf{reporters} (\emph{list}) -- A list of the storage classes
+  inteded for reporting the simulation data. This can be either
+  blues.storage.(NetCDF4Storage/BLUESStateDataStorage).
+\end{itemize}
+\end{description}
+
+\begin{description}
+\item[Methods]
+\item
+    \begin{minted}[breaklines]{python}
+    def apply(thermodynamic_state, sampler_state):
+        '''
+        Propagate the state through the integrator.
+        This updates the SamplerState after the integration.
+        '''
+    \end{minted}
+    
+    \begin{description}
+    \item
+        \textbf{Parameters}
+    \begin{itemize}
+    \item
+      \textbf{thermodynamic\_state}
+      (\emph{openmmtools.states.ThermodynamicState}) -- The thermodynamic
+      state to use to propagate dynamics.
+    \item
+      \textbf{sampler\_state} (\emph{openmmtools.states.SamplerState}) --
+      The sampler state to apply the move to. This is modified.
+    \end{itemize}
+    \end{description}
+\end{description}
+
+\hypertarget{randomligandrotationmove}{%
+\subsubsection{RandomLigandRotationMove}\label{randomligandrotationmove}}
+
+\begin{minted}[breaklines]{python}
+class blues.ncmc.RandomLigandRotationMove(n_steps=1000, timestep=Quantity(value=2.0, unit=femtosecond), atom_subset=None, context_cache=None, nprop=1, propLambda=0.3, reporters=[])
+'''
+An NCMC move which proposes random rotations.
+
+This class will propose a random rotation (as a rigid body) using the
+center of mass of the selected atoms. This class does not metropolize
+the proposed moves. Reporters can be attached to record the ncmc
+simulation data, mostly useful for debugging by storing coordinates of
+the proposed moves or monitoring the ncmc simulation progression by
+attaching a state reporter.
+'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{n\_steps} (\emph{int, optional}) -- The number of integration
+  timesteps to take each time the move is applied (default is 1000).
+\item
+  \textbf{timestep} (\emph{simtk.unit.Quantity, optional}) -- The
+  timestep to use for Langevin integration (time units, default is
+  1*simtk.unit.femtosecond).
+\item
+  \textbf{atom\_subset} (\emph{slice or list of int, optional}) -- If
+  specified, the move is applied only to those atoms specified by these
+  indices. If None, the move is applied to all atoms (default is None).
+\item
+  \textbf{context\_cache} (\emph{openmmtools.cache.ContextCache,
+  optional}) -- The ContextCache to use for Context creation. If None,
+  the global context cache is used (default is None).
+\item
+  \textbf{reporters} (\emph{list}) -- A list of the storage classes
+  inteded for reporting the simulation data. This can be either
+  blues.storage.(NetCDF4Storage/BLUESStateDataStorage).
+\end{itemize}
+\end{description}
+
+\begin{description}
+\item[Methods]
+\item
+    \begin{minted}[breaklines]{python}
+    def apply(thermodynamic_state, sampler_state):
+        '''
+        Propagate the state through the integrator.
+        This updates the SamplerState after the integration.
+        '''
+    \end{minted}
+    
+    \begin{description}
+    \item
+        \textbf{Parameters}
+    \begin{itemize}
+    \item
+      \textbf{thermodynamic\_state}
+      (\emph{openmmtools.states.ThermodynamicState}) -- The thermodynamic
+      state to use to propagate dynamics.
+    \item
+      \textbf{sampler\_state} (\emph{openmmtools.states.SamplerState}) --
+      The sampler state to apply the move to. This is modified.
+    \end{itemize}
+    \end{description}
+\end{description}
+
+\begin{description}
+\item
+    \textbf{Example}
+
+First we need to create the thermodynamic state, alchemical
+thermodynamic state, and the sampler state to propagate. Here we create
+a toy system of a charged ethylene molecule in between two charged
+particles.
+
+\begin{minted}[breaklines]{python}
+from simtk import unit
+from openmmtools import testsystems, alchemy
+from openmmtools.states import SamplerState, ThermodynamicState
+from blues.systemfactories import generateAlchSystem
+from blues import utils
+\end{minted}
+
+\begin{minted}[breaklines]{python}
+structure_pdb = utils.get_data_filename('blues', 'tests/data/ethylene_structure.pdb')
+structure = parmed.load_file(structure_pdb)
+system_xml = utils.get_data_filename('blues', 'tests/data/ethylene_system.xml')
+    with open(system_xml, 'r') as infile:
+        xml = infile.read()
+        system = openmm.XmlSerializer.deserialize(xml)
+thermodynamic_state = ThermodynamicState(system=system, temperature=200*unit.kelvin)
+sampler_state = SamplerState(positions=structure.positions.in_units_of(unit.nanometers))
+alchemical_atoms = [2, 3, 4, 5, 6, 7]
+alch_system = generateAlchSystem(thermodynamic_state.get_system(), alchemical_atoms)
+alch_state = alchemy.AlchemicalState.from_system(alch_system)
+alch_thermodynamic_state = ThermodynamicState(
+        alch_system, thermodynamic_state.temperature)
+alch_thermodynamic_state = CompoundThermodynamicState(
+        alch_thermodynamic_state, composable_states=[alch_state])
+\end{minted}
+
+Create reporters for storing our ncmc simulation data.
+
+\begin{minted}[breaklines]{python}
+from blues.storage import NetCDF4Storage, BLUESStateDataStorage
+nc_storage = NetCDF4Storage('test-ncmc.nc',
+                            reportInterval=5,
+                            crds=True, vels=True, frcs=True,
+                            protocolWork=True, alchemicalLambda=True)
+state_storage = BLUESStateDataStorage('test-ncmc.log',
+                                      reportInterval=5,
+                                      step=True, time=True,
+                                      potentialEnergy=True,
+                                      kineticEnergy=True,
+                                      totalEnergy=True,
+                                      temperature=True,
+                                      volume=True,
+                                      density=True,
+                                      progress=True,
+                                      remainingTime=True,
+                                      speed=True,
+                                      elapsedTime=True,
+                                      systemMass=True,
+                                      totalSteps=10,
+                                      protocolWork=True,
+                                      alchemicalLambda=True)
+\end{minted}
+
+Create a RandomLigandRotationMove move
+
+\begin{minted}[breaklines]{python}
+rot_move = RandomLigandRotationMove(n_steps=5,
+                                        timestep=1*unit.femtoseconds,
+                                        atom_subset=alchemical_atoms,
+                                        reporters=[nc_storage, state_storage])
+\end{minted}
+
+Perform one update of the sampler state. The sampler state is updated
+with the new state.
+
+\begin{minted}[breaklines]{python}
+move.apply(thermodynamic_state, sampler_state)
+np.allclose(sampler_state.positions, structure.positions)
+\end{minted}
+\end{description}
+
+\hypertarget{bluessampler}{%
+\subsubsection{BLUESSampler}\label{bluessampler}}
+
+\begin{minted}[breaklines]{python}
+class blues.ncmc.BLUESSampler(thermodynamic_state=None, alch_thermodynamic_state=None, sampler_state=None, dynamics_move=None, ncmc_move=None, topology=None)
+'''
+BLUESSampler runs the NCMC+MD hybrid simulation.
+
+This class ties together the two moves classes to execute the NCMC+MD
+hybrid simulation. One move class is intended to carry out traditional
+MD and the other is intended carry out the NCMC move proposals which
+performs the alchemical transformation to given atom subset. This class
+handles proper metropolization of the NCMC move proposals, while
+correcting for the switch in integrators.
+'''
+\end{minted}
+
+
+\begin{description}
+\item[Methods]
+\item 
+    \begin{minted}[breaklines]{python}
+    def equil(n_iterations=1):
+    '''
+    Equilibrate the system for N iterations
+    '''
+    \end{minted}
+    
+    \begin{minted}[breaklines]{python}
+    def run(n_iterations=1):
+    '''
+    Run the sampler for the specified number of iterations.
+    '''
+    \end{minted}
+\end{description}
+
+\hypertarget{systemfactory}{%
+\subsection{SystemFactory}\label{systemfactory}}
+SystemFactory contains methods to generate/modify the OpenMM System object.
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.systemfactory.generateAlchSystem(system, atom_indices, softcore_alpha=0.5, softcore_a=1, softcore_b=1, softcore_c=6, softcore_beta=0.0, softcore_d=1, softcore_e=1, softcore_f=2, annihilate_electrostatics=True, annihilate_sterics=False, disable_alchemical_dispersion_correction=True, alchemical_pme_treatment='direct-space', suppress_warnings=True, **kwargs)
+'''
+Return the OpenMM System for alchemical perturbations.
+
+This function calls openmmtools.alchemy.AbsoluteAlchemicalFactory and
+openmmtools.alchemy.AlchemicalRegion to generate the System for the
+NCMC simulation.
+'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{system} (\emph{openmm.System}) -- The OpenMM System object
+  corresponding to the reference system.
+\item
+  \textbf{atom\_indices} (\emph{list of int}) -- Atom indicies of the
+  move or designated for which the nonbonded forces (both sterics and
+  electrostatics components) have to be alchemically modified.
+\item
+  \textbf{annihilate\_electrostatics} (\emph{bool, optional}) -- If
+  True, electrostatics should be annihilated, rather than decoupled
+  (default is True).
+\item
+  \textbf{annihilate\_sterics} (\emph{bool, optional}) -- If True,
+  sterics (Lennard-Jones or Halgren potential) will be annihilated,
+  rather than decoupled (default is False).
+\item
+  \textbf{softcore\_alpha} (\emph{float, optional}) -- Alchemical
+  softcore parameter for Lennard-Jones (default is 0.5).
+\item
+  \textbf{softcore\_a, softcore\_b, softcore\_c} (\emph{float,
+  optional}) -- Parameters modifying softcore Lennard-Jones form.
+  Introduced in Eq. 13 of Ref.
+  \protect\hyperlink{ttpham-jchemphys135-2011}{{{[}TTPham-JChemPhys135-2011{]}}}
+  (default is 1).
+\item
+  \textbf{softcore\_beta} (\emph{float, optional}) -- Alchemical
+  softcore parameter for electrostatics. Set this to zero to recover
+  standard electrostatic scaling (default is 0.0).
+\item
+  \textbf{softcore\_d, softcore\_e, softcore\_f} (\emph{float,
+  optional}) -- Parameters modifying softcore electrostatics form
+  (default is 1).
+\item
+  \textbf{disable\_alchemical\_dispersion\_correction} (\emph{bool,
+  optional, default=True}) -- If True, the long-range dispersion
+  correction will not be included for the alchemical region to avoid the
+  need to recompute the correction (a CPU operation that takes
+  \textasciitilde{} 0.5 s) every time `lambda\_sterics' is changed. If
+  using nonequilibrium protocols, it is recommended that this be set to
+  True since this can lead to enormous (100x) slowdowns if the
+  correction must be recomputed every time step.
+\item
+  \textbf{alchemical\_pme\_treatment} (\emph{str, optional, default =
+  `direct-space'}) -- Controls how alchemical region electrostatics are
+  treated when PME is used. Options are `direct-space', `coulomb',
+  `exact'. - `direct-space' only models the direct space contribution -
+  `coulomb' includes switched Coulomb interaction - `exact' includes
+  also the reciprocal space contribution, but it's only possible to
+  annihilate the charges and the softcore parameters controlling the
+  electrostatics are deactivated. Also, with this method, modifying the
+  global variable lambda\_electrostatics is not sufficient to control
+  the charges. The recommended way to change them is through the
+  AlchemicalState class.
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+\item
+    \textbf{alch\_system} (\emph{alchemical\_system}) -- System to be used for the NCMC simulation.
+\end{itemize}
+\end{description}
+\end{description}
+% \textbf{References}
+
+% \begin{description}
+% \item[{\protect\hyperlink{id1}{TTPham-JChemPhys135-2011}}]
+% \begin{enumerate}
+% \setcounter{enumi}{19}
+% \item
+%   \begin{enumerate}
+%   \setcounter{enumii}{19}
+%   \item
+%     Pham and M. R. Shirts,
+%   \end{enumerate}
+% \end{enumerate}
+% \end{description}
+
+% \begin{enumerate}
+% \setcounter{enumi}{9}
+% \item
+%   Chem. Phys 135, 034114 (2011).
+  
+% \end{enumerate}
+% \end{description}
+
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.systemfactory.zero_masses(system, atomList=None)
+'''Zeroes the masses of specified atoms to constrain certain degrees of freedom. '''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{system} (\emph{openmm.System}) -- system to zero masses
+\item
+  \textbf{atomList} (\emph{list of ints}) -- atom indicies to zero
+  masses
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item 
+        \textbf{system} (\emph{openmm.System}) -- The modified system with massless atoms.
+\end{itemize}
+\end{description}
+
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.systemfactory.restrain_positions(structure, system, selection='(@CA, C, N)', weight=5.0, **kwargs)
+'''Apply positional restraints to atoms in the openmm.System by the given parmed selection.'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{system} (\emph{openmm.System}) -- The OpenMM System object to
+  be modified.
+\item
+  \textbf{structure} (\emph{parmed.Structure()}) -- Structure of the
+  system, used for atom selection.
+\item
+  \textbf{selection} (\emph{str, Default = ``(@CA,C,N)''}) -- AmberMask
+  selection to apply positional restraints to
+\item
+  \textbf{weight} (\emph{float, Default = 5.0}) -- Restraint weight for
+  xyz atom restraints in kcal/(mol A\^{}2)
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{system} (\emph{openmm.System}) -- Modified with positional restraints applied.
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.systemfactory.freeze_atoms(structure, system, freeze_selection=':LIG', **kwargs)
+'''Zero the masses of atoms from the given parmed selection.
+Massless atoms will be ignored by the integrator and will not change
+positions.
+'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{system} (\emph{openmm.System}) -- The OpenMM System object to
+  be modified.
+\item
+  \textbf{structure} (\emph{parmed.Structure()}) -- Structure of the
+  system, used for atom selection.
+\item
+  \textbf{freeze\_selection} (\emph{str, Default = ``:LIG''}) --
+  AmberMask selection for the center in which to select atoms for
+  zeroing their masses. Defaults to freezing protein backbone atoms.
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{system} (\emph{openmm.System}) -- The modified system with the selected atoms
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.systemfactory.freeze_radius(structure, system, freeze_distance=Quantity(value=5.0, unit=angstrom), freeze_center=':LIG', freeze_solvent=':HOH, NA, CL', **kwargs)
+'''
+Zero the masses of atoms outside the given raidus of the freeze_center
+parmed selection.
+
+Massless atoms will be ignored by the integrator and will not change
+positions. This is intended to freeze the solvent and protein atoms
+around the ligand binding site.
+'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{system} (\emph{openmm.System}) -- The OpenMM System object to
+  be modified.
+\item
+  \textbf{structure} (\emph{parmed.Structure()}) -- Structure of the
+  system, used for atom selection.
+\item
+  \textbf{freeze\_distance} (\emph{float, Default = 5.0}) -- Distance
+  (angstroms) to select atoms for retaining their masses. Atoms outside
+  the set distance will have their masses set to 0.0.
+\item
+  \textbf{freeze\_center} (\emph{str, Default = ``:LIG''}) -- AmberMask
+  selection for the center in which to select atoms for zeroing their
+  masses. Default: LIG
+\item
+  \textbf{freeze\_solvent} (\emph{str, Default = ``:HOH,NA,CL''}) --
+  AmberMask selection in which to select solvent atoms for zeroing their
+  masses.
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{system} (\emph{openmm.System}) -- Modified system with masses outside the freeze center zeroed.
+\end{itemize}
+\end{description}
+\end{description}
+
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.systemfactory.addBarostat(system, temperature=Quantity(value=300, unit=kelvin), pressure=Quantity(value=1, unit=atmosphere), frequency=25, **kwargs)
+'''Add a MonteCarloBarostat to the MD system.'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{system} (\emph{openmm.System}) -- The OpenMM System object
+  corresponding to the reference system.
+\item
+  \textbf{temperature} (\emph{float, default=300}) -- temperature
+  (Kelvin) to be simulated at.
+\item
+  \textbf{pressure} (\emph{int, configional, default=None}) -- Pressure
+  (atm) for Barostat for NPT simulations.
+\item
+  \textbf{frequency} (\emph{int, default=25}) -- Frequency at which
+  Monte Carlo pressure changes should be attempted (in time steps)
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{system} (\emph{openmm.System}) -- The OpenMM System with the MonteCarloBarostat attached.
+\end{itemize}
+\end{description}
+\end{description}
+
+\hypertarget{integrators}{%
+\subsection{Integrators}\label{integrators}}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+class blues.integrators.AlchemicalExternalLangevinIntegrator(
+alchemical_functions, splitting='R V O H O V R',
+temperature=Quantity(value=298.0, unit=kelvin),
+collision_rate=Quantity(value=1.0, unit=/picosecond), 
+timestep=Quantity(value=1.0, unit=femtosecond), 
+constraint_tolerance=1e-08, measure_shadow_work=False, 
+measure_heat=True, nsteps_neq=100, nprop=1, propLambda=0.3,
+*args, **kwargs)
+'''
+Allows nonequilibrium switching based on force parameters specified in
+alchemical\_functions. A variable named lambda is switched from 0 to 1
+linearly throughout the nsteps of the protocol. The functions can use
+this to create more complex protocols for other global parameters.
+
+As opposed to
+openmmtools.integrators.AlchemicalNonequilibriumLangevinIntegrator,
+which this inherits from, the AlchemicalExternalLangevinIntegrator
+integrator also takes into account work done outside the
+nonequilibrium switching portion(between integration steps). 
+For example if a molecule is rotated between integration steps, 
+this integrator would correctly account for the work caused by 
+that rotation.
+
+Propagator is based on Langevin splitting, as described below. One way
+to divide the Langevin system is into three parts which can each be
+solved ``exactly:''
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{alchemical\_functions} (\emph{dict of strings}) -- key: value
+  pairs such as ``global\_parameter'' : function\_of\_lambda where
+  function\_of\_lambda is a Lepton-compatible string that depends on the
+  variable ``lambda''
+\item
+  \textbf{splitting} (\emph{string, default: ``H V R O V R H''}) --
+  Sequence of R, V, O (and optionally V\{i\}), and \{ \}substeps to be
+  executed each timestep. There is also an H option, which increments
+  the global parameter lambda by 1/nsteps\_neq for each step. Forces are
+  only used in V-step. Handle multiple force groups by appending the
+  force group index to V-steps, e.g. ``V0'' will only use forces from
+  force group 0. ``V'' will perform a step using all forces.( will cause
+  metropolization, and must be followed later by a ).
+\item
+  \textbf{temperature} (\emph{unit.Quantity, default: 298.0*simtk.unit.kelvin}) -- Fictitious ``bath''
+  temperature
+\item
+  \textbf{collision\_rate} (\emph{unit.Quantity, default: 1.0/picoseconds}) -- Collision
+  rate
+\item
+  \textbf{timestep} (\emph{unit.Quantity, default: 1.0*femtoseconds}) -- Integration
+  timestep
+\item
+  \textbf{constraint\_tolerance} (\emph{float, default: 1.0e-8}) --
+  Tolerance for constraint solver
+\item
+  \textbf{measure\_shadow\_work} (\emph{boolean, default: False}) --
+  Accumulate the shadow work performed by the symplectic substeps, in
+  the global shadow\_work
+\item
+  \textbf{measure\_heat} (\emph{boolean, default: True}) -- Accumulate
+  the heat exchanged with the bath in each step, in the global heat
+\item
+  \textbf{nsteps\_neq} (\emph{int, default: 100}) -- Number of steps in
+  nonequilibrium protocol. Default 100
+\item
+  \textbf{prop\_lambda} (\emph{float (Default = 0.3)}) -- Defines the
+  region in which to add extra propagation steps during the NCMC
+  simulation from the midpoint 0.5. i.e. A value of 0.3 will add extra
+  steps from lambda 0.2 to 0.8.
+\item
+  \textbf{nprop} (\emph{int (Default: 1)}) -- Controls the number of
+  propagation steps to add in the lambda region defined by prop\_lambda.
+\end{itemize}
+\end{description}
+\begin{description}
+\item
+    \textbf{Splitting Parameters}
+\begin{itemize}
+\item
+  \begin{description}
+  \item[R: Linear ``drift'' / Constrained ``drift'']
+  Deterministic update of \emph{positions}, using current velocities
+  \texttt{x\ \textless{}-\ x\ +\ v\ dt}
+  \end{description}
+\item
+  \begin{description}
+  \item[V: Linear ``kick'' / Constrained ``kick'']
+  Deterministic update of \emph{velocities}, using current forces
+  \texttt{v\ \textless{}-\ v\ +\ (f/m)\ dt}; where f = force, m = mass
+  \end{description}
+\item
+  \begin{description}
+  \item[O: Ornstein-Uhlenbeck]
+  Stochastic update of velocities, simulating interaction with a heat
+  bath \texttt{v\ \textless{}-\ av\ +\ b\ sqrt(kT/m)\ R} where:
+
+  \begin{itemize}
+  \item
+    a = e\^{}(-gamma dt)
+  \item
+    b = sqrt(1 - e\^{}(-2gamma dt))
+  \item
+    R is i.i.d. standard normal
+  \end{itemize}
+  \end{description}
+  \item
+    \textbf{Example}
+  \begin{itemize}
+    \item
+      \begin{description}
+      \item[g-BAOAB:]
+      splitting=''R V O H O V R''
+      \end{description}
+    \item
+      \begin{description}
+      \item[VVVR]
+      splitting=''O V R H R V O''
+      \end{description}
+    \item
+      \begin{description}
+      \item[VV]
+      splitting=''V R H R V''
+      \end{description}
+    \item
+      \begin{description}
+      \item[An NCMC algorithm with Metropolized integrator:]
+      splitting=''O \{ V R H R V \} O''
+      \end{description}
+    \end{itemize}
+\end{itemize}
+
+We can then construct integrators by solving each part for a certain
+timestep in sequence. (We can further split up the V step by force
+group, evaluating cheap but fast-fluctuating forces more frequently than
+expensive but slow-fluctuating forces. Since forces are only evaluated
+in the V step, we represent this by including in our ``alphabet'' V0,
+V1, \ldots) When the system contains holonomic constraints, these steps
+are confined to the constraint manifold.
+\end{description}
+
+\textbf{References}
+
+{[}Nilmeier, et al. 2011{]} Nonequilibrium candidate Monte Carlo is an
+efficient tool for equilibrium simulation
+
+{[}Leimkuhler and Matthews, 2015{]} Molecular dynamics: with
+deterministic and stochastic numerical methods, Chapter 7
+
+\begin{description}
+\item
+    \textbf{Methods}
+\begin{minted}[breaklines]{python}
+def reset():
+'''Manually reset protocol work and other statistics.'''
+\end{minted}
+\end{description}
+\end{description}
+
+
+\hypertarget{utilities}{%
+\subsection{Utilities}\label{utilities}}
+
+Provides a host of utility functions for the BLUES engine.
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.utils.amber_selection_to_atomidx(structure, selection)
+'''Converts AmberMask selection to list of atom indices.'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{structure} (\emph{parmed.Structure()}) -- Structure of the
+  system, used for atom selection.
+\item
+  \textbf{selection} (\emph{str}) -- AmberMask selection that gets
+  converted to a list of atom indices.
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{mask\_idx} (\emph{list of int}) -- List of atom indices.
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.utils.check_amber_selection(structure, selection)
+'''
+Given an AmberMask selection (str) for selecting atoms to freeze or
+restrain, check if it will actually select atoms. If the selection
+produces None, suggest valid residues or atoms.
+'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{structure} (\emph{parmed.Structure}) -- The structure of the
+  simulated system
+\item
+  \textbf{selection} (\emph{str}) -- The selection string uses Amber
+  selection syntax to select atoms to be restrained/frozen during
+  simulation.
+\item
+  \textbf{logger} (\emph{logging.Logger}) -- Records information or
+  streams to terminal.
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def blues.utils.atomidx_to_atomlist(structure, mask_idx)
+'''Goes through the structure and matches the previously 
+selected atom indices to the atom type.'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{structure} (\emph{parmed.Structure()}) -- Structure of the
+  system, used for atom selection.
+\item
+  \textbf{mask\_idx} (\emph{list of int}) -- List of atom indices.
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{atom\_list} (\emph{list of atoms}) -- The atoms that were previously selected in mask\_idx.
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def blues.utils.parse_unit_quantity(unit_quantity_str)
+'''Utility for parsing parameters from the YAML file that require units. '''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+    \item
+        \textbf{unit\_quantity\_str} (\emph{str}) -- A string specifying a quantity and it's units. i.e. `3.024 * daltons'
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{unit\_quantity} (\emph{simtk.unit.Quantity}) -- i.e unit.Quantity(3.024, unit=dalton)
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def blues.utils.atomIndexfromTop(resname, topology)
+'''Get atom indices of a ligand from OpenMM Topology.'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{resname} (\emph{str}) -- resname that you want to get the atom
+  indicies for (ex. `LIG')
+\item
+  \textbf{topology} (\emph{str, optional, default=None}) -- path of
+  topology file. Include if the topology is not included in the
+  coord\_file
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{lig\_atoms} (\emph{list of ints}) -- list of atoms in the coordinate file matching lig\_resname
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def blues.utils.getMasses(atom_subset, topology)
+'''Returns a list of masses of the specified ligand atoms.'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\textbf{topology} (\emph{parmed.Topology}) -- ParmEd topology object
+containing atoms of the system.
+\item
+    \textbf{Returns}
+\begin{itemize}
+\item
+  \textbf{masses} (\emph{1xn numpy.array * simtk.unit.dalton}) -- array
+  of masses of len(self.atom\_indices), denoting the masses of the atoms
+  in self.atom\_indices
+\item
+  \textbf{totalmass} (\emph{float * simtk.unit.dalton}) -- The sum of
+  the mass found in masses
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def blues.utils.getCenterOfMass(positions, masses)
+'''Returns the calculated center of mass of the ligand as a numpy.array'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{positions} (\emph{nx3 numpy array * nanometers}) -- ParmEd positions of the atoms to be moved.
+\item
+  \textbf{masses} (\emph{numpy.array}) -- numpy.array of particle masses
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+    \textbf{center\_of\_mass} (\emph{numpy array * unit.nanometers}) -- 1x3 numpy.array of the center of mass of
+    the given positions
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def blues.utils.saveContextFrame(context, topology, outfname)
+'''Extracts a ParmEd structure and writes the frame given an OpenMM Simulation.'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{simulation} (\emph{openmm.Simulation}) -- The OpenMM
+  Simulation to write a frame from.
+\item
+  \textbf{outfname} (\emph{str}) -- The output file name to save the
+  simulation frame from. Supported extensions:
+
+  \begin{itemize}
+  \item
+    PDB (.pdb, pdb)
+  \item
+    PDBx/mmCIF (.cif, cif)
+  \item
+    PQR (.pqr, pqr)
+  \item
+    Amber topology file (.prmtop/.parm7, amber)
+  \item
+    CHARMM PSF file (.psf, psf)
+  \item
+    CHARMM coordinate file (.crd, charmmcrd)
+  \item
+    Gromacs topology file (.top, gromacs)
+  \item
+    Gromacs GRO file (.gro, gro)
+  \item
+    Mol2 file (.mol2, mol2)
+  \item
+    Mol3 file (.mol3, mol3)
+  \item
+    Amber ASCII restart (.rst7/.inpcrd/.restrt, rst7)
+  \item
+    Amber NetCDF restart (.ncrst, ncrst)
+  \end{itemize}
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def blues.utils.print_host_info(context)
+'''Prints hardware related information for the openmm.Simulation'''
+\end{minted}
+
+
+\begin{description}
+\item
+    \textbf{Parameters}
+    \item
+        \textbf{simulation} (\emph{openmm.Simulation}) -- The OpenMM Simulation to write a frame from.
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def blues.utils.get_data_filename(package_root, relative_path)
+'''
+Get the full path to one of the reference files in testsystems. In the
+source distribution, these files are in \texttt{blues/data/}, but on
+installation, they're moved to somewhere in the user's python
+site-packages directory. Adapted from:
+https://github.com/open-forcefield-group/smarty/blob/master/smarty/utils.py
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{package\_root} (\emph{str}) -- Name of the included/installed
+  python package
+\item
+  \textbf{relative\_path} (\emph{str}) -- Path to the file within the
+  python package
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{fn} (\emph{str}) -- Full path to file
+\end{itemize}
+\end{description}
+\end{description}
+
+
+\hypertarget{storage}{%
+\subsection{Storage}\label{storage}}
+Provides classes and methods for storing simulation data.
+
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.storage.setup_logging(filename=None, yml_path='logging.yml', default_level=20, env_key='LOG_CFG')
+'''Setup logging configuration.'''
+\end{minted}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.storage.addLoggingLevel(levelName, levelNum, methodName=None)
+'''
+Comprehensively adds a new logging level to the logging module and the
+currently configured logging class.
+
+levelName becomes an attribute of the logging module with the value
+levelNum. methodName becomes a convenience method for both logging
+itself and the class returned by logging.getLoggerClass() 
+(usually just logging.Logger). If methodName is not specified,
+levelName.lower() is used.
+
+To avoid accidental clobberings of existing attributes, this method 
+will raise an AttributeError if the level name is already an 
+attribute of the logging module or if the method name is 
+already present
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{levelName} (\emph{str}) -- The new level name to be added to
+  the logging module.
+\item
+  \textbf{levelNum} (\emph{int}) -- The level number indicated for the
+  logging module.
+\item
+  \textbf{methodName} (\emph{str, default=None}) -- The method to call
+  on the logging module for the new level name. For example if provided
+  `trace', you would call logging.trace().
+\end{itemize}
+\end{description}
+
+\begin{description}
+\item 
+    \textbf{Example}
+
+\begin{minted}{python}
+addLoggingLevel('TRACE', logging.DEBUG - 5)
+logging.getLogger(__name__).setLevel("TRACE")
+logging.getLogger(__name__).trace('that worked')
+logging.trace('so did this')
+logging.TRACE
+>>> 5
+\end{minted}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+def blues.storage.init_logger(logger, level=20, stream=True, outfname='blues-20190618-121319')
+'''
+Initialize the Logger module with the given logger_level and outfname.
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{logger} (\emph{logging.getLogger()}) -- The root logger object
+  if it has been created already.
+\item
+  \textbf{level} (\emph{logging.\textless LEVEL\textgreater{}}) -- Valid
+  options for \textless LEVEL\textgreater{} would be DEBUG, INFO,
+  warningING, ERROR, CRITICAL.
+\item
+  \textbf{stream} (\emph{bool, default = True}) -- If True, the logger
+  will also stream information to sys.stdout as well as the output file.
+\item
+  \textbf{outfname} (\emph{str, default =
+  time.strftime(``blues-\%Y\%m\%d-\%H\%M\%S'')}) -- The output file path
+  prefix to store the logged data. This will always write to a file with
+  the extension .log.
+\end{itemize}
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{logger} (\emph{logging.getLogger()}) -- The logging object with additional Handlers added.
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+class blues.storage.NetCDF4Storage(file, reportInterval=1, frame_indices=[], crds=True, vels=False, frcs=False, protocolWork=False, alchemicalLambda=False)
+'''
+Class to read or write NetCDF trajectory files.
+Inherited from parmed.openmm.reporters.NetCDFReporter
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{file} (\emph{str}) -- Name of the file to write the trajectory
+  to
+\item
+  \textbf{reportInterval} (\emph{int}) -- How frequently to write a
+  frame to the trajectory
+\item
+  \textbf{frame\_indices} (\emph{list, frame numbers for writing the
+  trajectory}) -- If this reporter is used for the NCMC simulation, 0.5
+  will report at the moveStep and -1 will record at the last frame.
+\item
+  \textbf{crds} (\emph{bool=True}) -- Should we write coordinates to
+  this trajectory? (Default True)
+\item
+  \textbf{vels} (\emph{bool=False}) -- Should we write velocities to
+  this trajectory? (Default False)
+\item
+  \textbf{frcs} (\emph{bool=False}) -- Should we write forces to this
+  trajectory? (Default False)
+\item
+  \textbf{protocolWork} (\emph{bool=False,}) -- Write the protocolWork
+  for the alchemical process in the NCMC simulation
+\item
+  \textbf{alchemicalLambda} (\emph{bool=False,}) -- Write the
+  alchemicalLambda step for the alchemical process in the NCMC
+  simulation.
+\end{itemize}
+\end{description}
+
+\begin{description}
+\item
+    \textbf{Methods}
+    
+\begin{minted}{python}
+def describeNextReport(context_state)
+'''
+Get information about the next report this object will generate.
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\textbf{context\_state} (\VERB|\NormalTok{openmm.State}|) -- The current
+state of the context
+\item
+    \textbf{Returns}
+\begin{itemize}
+    \item
+        \textbf{nsteps, pos, vel, frc, ene} (\emph{int, bool, bool, bool, bool})
+    -- nsteps is the number of steps until the next report pos, vel, frc,
+    and ene are flags indicating whether positions, velocities, forces,
+    and/or energies are needed from the Context
+\end{itemize}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def report(context_state, integrator)
+'''Generate a report.'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{context\_state} (\VERB|\NormalTok{openmm.State}|) -- The
+  current state of the context
+\item
+  \textbf{integrator} (\VERB|\NormalTok{openmm.Integrator}|) -- The
+  integrator belonging to the given context
+\end{itemize}
+\end{description}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+class blues.storage.BLUESStateDataStorage(file=None, reportInterval=1, frame_indices=[], title='', step=False, time=False, potentialEnergy=False, kineticEnergy=False, totalEnergy=False, temperature=False, volume=False, density=False, progress=False, remainingTime=False, speed=False, elapsedTime=False, separator='t', systemMass=None, totalSteps=None, protocolWork=False, alchemicalLambda=False, currentIter=False)
+'''
+StateDataReporter outputs information about a simulation, such as
+energy and temperature, to a file. To use it, create a 
+StateDataReporter, then add it to the Simulation's list of reporters.
+The set of data to write is configurable using boolean flags passed to
+the constructor. By default the data is written in 
+comma-separated-value (CSV) format, but you can specify a different 
+separator to use. Inherited from openmm.app.StateDataReporter
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{file} (\emph{string or file}) -- The file to write to,
+  specified as a file name or file-like object (Logger)
+\item
+  \textbf{reportInterval} (\emph{int}) -- The interval (in time steps)
+  at which to write frames
+\item
+  \textbf{frame\_indices} (\emph{list, frame numbers for writing the
+  trajectory})
+\item
+  \textbf{title} (\emph{str,}) -- Text prefix for each line of the
+  report. Used to distinguish between the NCMC and MD simulation
+  reports.
+\item
+  \textbf{step} (\emph{bool=False}) -- Whether to write the current step
+  index to the file
+\item
+  \textbf{time} (\emph{bool=False}) -- Whether to write the current time
+  to the file
+\item
+  \textbf{potentialEnergy} (\emph{bool=False}) -- Whether to write the
+  potential energy to the file
+\item
+  \textbf{kineticEnergy} (\emph{bool=False}) -- Whether to write the
+  kinetic energy to the file
+\item
+  \textbf{totalEnergy} (\emph{bool=False}) -- Whether to write the total
+  energy to the file
+\item
+  \textbf{temperature} (\emph{bool=False}) -- Whether to write the
+  instantaneous temperature to the file
+\item
+  \textbf{volume} (\emph{bool=False}) -- Whether to write the periodic
+  box volume to the file
+\item
+  \textbf{density} (\emph{bool=False}) -- Whether to write the system
+  density to the file
+\item
+  \textbf{progress} (\emph{bool=False}) -- Whether to write current
+  progress (percent completion) to the file. If this is True, you must
+  also specify totalSteps.
+\item
+  \textbf{remainingTime} (\emph{bool=False}) -- Whether to write an
+  estimate of the remaining clock time until completion to the file. If
+  this is True, you must also specify totalSteps.
+\item
+  \textbf{speed} (\emph{bool=False}) -- Whether to write an estimate of
+  the simulation speed in ns/day to the file
+\item
+  \textbf{elapsedTime} (\emph{bool=False}) -- Whether to write the
+  elapsed time of the simulation in seconds to the file.
+\item
+  \textbf{separator} (\emph{string=','}) -- The separator to use between
+  columns in the file
+\item
+  \textbf{systemMass} (\emph{mass=None}) -- The total mass to use for
+  the system when reporting density. If this is None (the default), the
+  system mass is computed by summing the masses of all particles. This
+  parameter is useful when the particle masses do not reflect their
+  actual physical mass, such as when some particles have had their
+  masses set to 0 to immobilize them.
+\item
+  \textbf{totalSteps} (\emph{int=None}) -- The total number of steps
+  that will be included in the simulation. This is required if either
+  progress or remainingTime is set to True, and defines how many steps
+  will indicate 100\% completion.
+\item
+  \textbf{protocolWork} (\emph{bool=False,}) -- Write the protocolWork
+  for the alchemical process in the NCMC simulation
+\item
+  \textbf{alchemicalLambda} (\emph{bool=False,}) -- Write the
+  alchemicalLambda step for the alchemical process in the NCMC
+  simulation.
+\end{itemize}
+\end{description}
+
+\begin{description}
+\item
+    \textbf{Methods}
+
+\begin{minted}{python}
+def describeNextReport(context_state)
+'''
+Get information about the next report this object will generate.
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\textbf{context\_state} (\VERB|\NormalTok{openmm.State}|) -- The current
+state of the context
+\item[Returns]
+\textbf{nsteps, pos, vel, frc, ene} (\emph{int, bool, bool, bool, bool})
+-- nsteps is the number of steps until the next report pos, vel, frc,
+and ene are flags indicating whether positions, velocities, forces,
+and/or energies are needed from the Context
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def report(context_state, integrator)
+'''Generate a report.'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{context\_state} (\VERB|\NormalTok{openmm.State}|) -- The
+  current state of the context
+\item
+  \textbf{integrator} (\VERB|\NormalTok{openmm.Integrator}|) -- The
+  integrator belonging to the given context
+\end{itemize}
+\end{description}
+\end{description}
+\end{description}
+
+\hypertarget{formats}{%
+\subsection{Formats}\label{formats}}
+Provides the classes for storage formatting.
+
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+class blues.formats.LoggerFormatter
+'''
+Formats the output of the logger.Logger object. Allows
+customization for customized logging levels. This will add
+a custom level `REPORT' to all custom BLUES reporters from
+the blues.reporters module.
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Examples}
+
+Below we add a custom level `REPORT' and have the logger module stream
+the message to sys.stdout without any additional information to our
+custom reporters from the blues.reporters module
+
+\begin{minted}[breaklines]{python}
+from blues import reporters
+from blues.formats import LoggerFormatter
+import logging, sys
+logger = logging.getLogger(__name__)
+reporters.addLoggingLevel('REPORT', logging.WARNING - 5)
+fmt = LoggerFormatter(fmt="%(message)s")
+stdout_handler = logging.StreamHandler(stream=sys.stdout)
+stdout_handler.setFormatter(fmt)
+logger.addHandler(stdout_handler)
+logger.report('This is a REPORT call')
+>>> This is a REPORT call
+ogger.info('This is an INFO call')
+>>> INFO: This is an INFO call
+\end{minted}
+\end{description}
+
+\begin{description}
+\begin{minted}{python}
+def format(record)
+'''Format the specified record as text.
+
+The record's attribute dictionary is used as the operand to a string
+formatting operation which yields the returned string. Before formatting
+the dictionary, a couple of preparatory steps are carried out. The
+message attribute of the record is computed using
+LogRecord.getMessage(). If the formatting string uses the time (as
+determined by a call to usesTime(), formatTime() is called to format the
+event time. If there is exception information, it is formatted using
+formatException() and appended to the message.
+'''
+\end{minted}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+class blues.formats.NetCDF4Traj(fname, mode='r')
+'''
+Extension of parmed.amber.netcdffiles.NetCDFTraj to allow proper file
+flushing. Requires the netcdf4 library (not scipy), install with conda
+install -c conda-forge netcdf4.
+'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{fname} (\emph{str}) -- File name for the trajectory file
+\item
+  \textbf{mode} (\emph{str, default='r'}) -- The mode to open the file
+  in.
+\end{itemize}
+\end{description}
+
+
+\begin{description}
+\item
+    \textbf{Methods}
+\begin{description}
+\begin{minted}{python}
+def flush()
+'''Flush buffered data to disc.'''
+\end{minted}
+\end{description}
+\end{description}
+
+\begin{description}
+\begin{minted}[breaklines]{python}
+classmethod open_new(fname, natom, box, crds=True, vels=False, frcs=False, remd=None, remd_dimension=None, title='', protocolWork=False, alchemicalLambda=False)
+'''Opens a new NetCDF file and sets the attributes'''
+\end{minted}
+
+\begin{description}
+\item
+    \textbf{Parameters}
+\begin{itemize}
+\item
+  \textbf{fname} (\emph{str}) -- Name of the new file to open
+  (overwritten)
+\item
+  \textbf{natom} (\emph{int}) -- Number of atoms in the restart
+\item
+  \textbf{box} (\emph{bool}) -- Indicates if cell lengths and angles are
+  written to the NetCDF file
+\item
+  \textbf{crds} (\emph{bool, default=True}) -- Indicates if coordinates
+  are written to the NetCDF file
+\item
+  \textbf{vels} (\emph{bool, default=False}) -- Indicates if velocities
+  are written to the NetCDF file
+\item
+  \textbf{frcs} (\emph{bool, default=False}) -- Indicates if forces are
+  written to the NetCDF file
+\item
+  \textbf{remd} (\emph{str, default=None}) -- `T{[}emperature{]}' if
+  replica temperature is written `M{[}ulti{]}' if Multi-D REMD
+  information is written None if no REMD information is written
+\item
+  \textbf{remd\_dimension} (\emph{int, default=None}) -- If remd above
+  is `M{[}ulti{]}', this is how many REMD dimensions exist
+\item
+  \textbf{title} (\emph{str, default='`}) -- The title of the NetCDF
+  trajectory file
+\item
+  \textbf{protocolWork} (\emph{bool, default=False}) -- Indicates if
+  protocolWork from the NCMC simulation should be written to the NetCDF
+  file
+\item
+  \textbf{alchemicalLambda} (\emph{bool, default=False}) -- Indicates if
+  alchemicalLambda from the NCMC simulation should be written to the
+  NetCDF file
+\end{itemize}
+\end{description}
+\end{description}
+\end{description}

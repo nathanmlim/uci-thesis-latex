@@ -31,8 +31,31 @@
 \usepackage{xr-hyper}
 %\usepackage{hyperref}
 \usepackage{float}
-\usepackage{xcolor}
-    
+\usepackage{minted}
+\usemintedstyle{monokai}
+\definecolor{bg}{HTML}{282828}
+\setminted{bgcolor=gray}
+
+\makeatletter
+\newcommand\aepath[1]{%%
+  \bgroup
+    \ttfamily
+    \ae@path#1\relax\@nil
+  \egroup}
+\def\ae@path#1#2\@nil{%%
+  \def\ae@continue{}%%
+  \detokenize{#1}\unskip\penalty\z@  
+  \ifx\relax#2%%
+  \else 
+    \def\ae@continue{\ae@path#2\@nil}%%
+  \fi
+  \ae@continue}
+\makeatother
+
+\let\texttt\aepath
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
 % plainpages=false fixes the "duplicate ignored" error with page counters
 % Set pdfborder to 0 0 0 to disable colored borders around PDF hyperlinks
@@ -64,6 +87,8 @@
 \newtheorem{theorem}{\textsc{Theorem}}[chapter]
 \newtheorem{definition}{\textsc{Definition}}[chapter]
 \newtheorem{example}{\textsc{Example}}[chapter]
+\newcommand{\angstrom}{\mbox{\normalfont\AA}}
+
 
 % Macros for title, author, abstract, etc.
 \input{preliminaries}
@@ -97,10 +122,22 @@
 
 % Include the different components of your thesis, in separate files.
 % Using \include allows you to set \includeonly above.
-\include{chapter1}
-\include{T4supp}
-\include{chapter2}
-% ... and so on
+% \include{chapter0}
+% \include{chapter1}
+%      \include{T4supp}
+%\include{chapter2}
+% \include{chapter3}
+%     \include{blues-docs/installation}
+%     \include{blues-docs/usage}
+%     \include{blues-docs/module_doc}
+%     \include{blues-docs/devdoc}
+%     \include{blues-docs/conclusion}
+% \include{chapter4}
+%     \include{chapter4/msm}
+%     \include{chapter4/distance}
+%\include{chapter5}
+%\include{chapter6}
+%\include{conclusion}
 
 % These commands fix an odd problem in which the bibliography line
 % of the Table of Contents shows the wrong page number.
@@ -116,10 +153,10 @@
 % the List of Figures and Tables, respectively, so these commands from
 % the caption package turn it off from this point onwards. If needed,
 % it can be re-enabled later (using list=yes argument).
-\captionsetup[figure]{list=no}
-\captionsetup[table]{list=no}
+%\captionsetup[figure]{list=no}
+%\captionsetup[table]{list=no}
 
 % If you have an appendix, it should come after the references.
-\include{appendix}
+%\include{appendix}
 
 \end{document}

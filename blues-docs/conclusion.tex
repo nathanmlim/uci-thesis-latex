@@ -1,0 +1,12 @@
+\section{Conclusion}
+On the BLUES project, my primary contribution was to incorporate the best practices in software development such as: (1) version control, (2) testing and code coverage, (3) continuous integration, (4) automated build systems, (5) standardized code style, and (6) documentation.
+Incorporation of these design principles ensure long-term reliability, reproducibility, and viability in the code and go towards helping others continue future work and extensions on the BLUES project.
+The BLUES software package is available on Github with 80\% of the code base tested, continually integrated with Travis-CI, and the documentation available on ReadTheDocks. 
+I have written the code to adhere to the PEP8 format \cite{pep8} and the documentation follows the numpydoc \cite{numpydoc} format.
+
+Furthermore, by designing the BLUES toolkit to be as modular as possible, this has enabled easy implementation of new NCMC move types to enhance sampling beyond simple ligand rotations.
+Recent work in the Mobley lab has included implementation of NCMC moves such as: sidechain rotations \cite{burley2019enhancing} for enhancing protein motions, rotations in ligand torsional angles, and `water-hopping' for enhanced sampling of water motions.
+These recent studies utilize the same code base as seen in our studies with simple random ligand rotations, but have simply replaced the ligand rotation function with these alternative moves.
+Since version 0.2.5, the BLUES code has been re-designed to be compatibility with other software packages like `openmmtools' \cite{openmmtools} to allow simple conversion of their Markov-chain Monte Carlo moves into NCMC moves, to be used in the NCMC+MD hybrid simulation framework that the BLUES toolkit provides.
+
+Incorporation of these design principles ensure long-term reliability, reproducibility, and viability in the code and go towards helping others continue future work and extensions on the BLUES project. 

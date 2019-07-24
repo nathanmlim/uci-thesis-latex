@@ -1,4 +1,4 @@
-\chapter{Computational studies of Diphtheria Toxin T Domain: role of acidic residue E362 in membrane-protein insertion and pore formation.}
+\chapter{Computational studies of Diphtheria Toxin T Domain: role of acidic residue E362 in membrane-protein insertion and pore formation.} \label{DTT}
 \small{Authors: Nathan M. Lim, J. Alfredo Freites, Linh P. Nguyen, Douglas J. Tobias, David L. Mobley}\\
 \emph{Excerpt from: `Refining Protein Penetration into the Lipid Bilayer Using Fluorescence Quenching and Molecular Dynamics Simulations: The Case of Diphtheria Toxin Translocation Domain' \cite{Kyrychenko2018}}\\
 \emph{J. Mem. Bio., 2018, 251 (9), pp 379--391 \\
@@ -8,7 +8,7 @@
 \begin{figure}[H]
 \centering
 \frame{\includegraphics[width=\linewidth,]{Figures/DTT/thermo_cycle.png}}
-\caption{Thermodynamic cycle for calculating membrane-protein insertion free energies of DTT for neutralized E362 relative to charged E362. The vertical legs relate to the membrane insertion free energies of DTT which is obtained from the equivalent horizontal legs calculated from the alchemical free energy calculations. Residue E362 is represented with van der Waals spheres in each image. For figures of the protein, the TH8-TH9 helices are shaded differently from the rest of the protein and S336 is displayed to illustrate its position on the TH8 helix relative to E362.}
+\caption[Thermodynamic cycle for membrane-protein insertion]{Thermodynamic cycle for calculating membrane-protein insertion free energies of DTT for neutralized E362 relative to charged E362. The vertical legs relate to the membrane insertion free energies of DTT which is obtained from the equivalent horizontal legs calculated from the alchemical free energy calculations. Residue E362 is represented with van der Waals spheres in each image. For figures of the protein, the TH8-TH9 helices are shaded differently from the rest of the protein and S336 is displayed to illustrate its position on the TH8 helix relative to E362.}
 \label{fig:dtt_thermo_cycle}
 \end{figure}
 
@@ -62,7 +62,7 @@ For analysis with dxTuber, we used a combination of two settings: (1) time-avera
 
 \begin{table}[H]
 \centering
-\caption{Initial and corrected\cite{rocklin2013calculating} free energies obtained from alchemical free energy calculations which transformed E362 from charged to neutral in both the aqueous and membrane environments. The membrane-protein insertion free energies are obtained from the difference in free energies between the two environments.}
+\caption[Initial and corrected free energies]{Initial and corrected\cite{rocklin2013calculating} free energies obtained from alchemical free energy calculations which transformed E362 from charged to neutral in both the aqueous and membrane environments. The membrane-protein insertion free energies are obtained from the difference in free energies between the two environments.}
 \label{tbl:dtt_ddG}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -116,7 +116,7 @@ Thus, we provide supporting evidence on the importance of residue E362 and its p
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,]{Figures/DTT/hbonds_compare.png}
-\caption{Hydrogen bond network between the TH8-TH9 helices involving residues S336, S337, E362, S363, and N366. The red arrow points to the H-bond formed between residues S337/S363 which are the two closest points of contacts between the helices. When E362 is charged (Fig.\ref{fig:dtt_hbonds}A; green), residues N366/S336 are oriented inward but are flipped away when E362 is neutral (Fig.\ref{fig:dtt_hbonds}B; blue). Fig. \ref{fig:dtt_hbonds}C shows the shift of the TH8 helix when E362 is charged by overlaying the protein structure from neutralized E362.}
+\caption[H-Bonds in DTT TH8-TH9 helices]{Hydrogen bond network between the TH8-TH9 helices involving residues S336, S337, E362, S363, and N366. The red arrow points to the H-bond formed between residues S337/S363 which are the two closest points of contacts between the helices. When E362 is charged (Fig.\ref{fig:dtt_hbonds}A; green), residues N366/S336 are oriented inward but are flipped away when E362 is neutral (Fig.\ref{fig:dtt_hbonds}B; blue). Fig. \ref{fig:dtt_hbonds}C shows the shift of the TH8 helix when E362 is charged by overlaying the protein structure from neutralized E362.}
 \label{fig:dtt_hbonds}
 \end{figure}
 
@@ -129,7 +129,7 @@ This finding suggests favorability for neutralized over charged E362 during the 
 
 \begin{table}[H]
 \centering
-\caption{Mean cross-sectional area along the Z-axis of the pore formed by DTT when E362 is charged versus neutral. Calculated from dxTuber\cite{raunest2011dxtuber}, using average solvent densities with average versus minimum protein densities.}
+\caption[Cross-sectional area of DTT pore]{Mean cross-sectional area along the Z-axis of the pore formed by DTT when E362 is charged versus neutral. Calculated from dxTuber\cite{raunest2011dxtuber}, using average solvent densities with average versus minimum protein densities.}
 \label{tbl:dtt_pore}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -142,7 +142,7 @@ Charged & 750 & 217 \\ \hline
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,]{Figures/DTT/avgdx.png}
-\caption{Solvent accessibility map using average protein and average solvent densities over the 64ns MD simulation. The time-averaged solvent densities are shown for when E362 is charged (Fig.\ref{fig:dtt_avgdx}A; green) and when E362 is neutral (Fig.\ref{fig:dtt_avgdx}B; blue). Solvent densities are colored red for high density and blue for low density. Fig.\ref{fig:dtt_avgdx}C plots the cross-sectional area along the Z-axis with the mean cross-sectional areas being 750\AA$^2$ for neutral E362 and 740\AA$^2$ for charged E362 (Table \ref{tbl:dtt_pore}).}
+\caption[Solvent accessibility of DTT pore]{Solvent accessibility map using average protein and average solvent densities over the 64ns MD simulation. The time-averaged solvent densities are shown for when E362 is charged (Fig.\ref{fig:dtt_avgdx}A; green) and when E362 is neutral (Fig.\ref{fig:dtt_avgdx}B; blue). Solvent densities are colored red for high density and blue for low density. Fig.\ref{fig:dtt_avgdx}C plots the cross-sectional area along the Z-axis with the mean cross-sectional areas being 750\AA$^2$ for neutral E362 and 740\AA$^2$ for charged E362 (Table \ref{tbl:dtt_pore}).}
 \label{fig:dtt_avgdx}
 \end{figure}
 
@@ -159,7 +159,7 @@ This analysis provides further evidence that membrane perturba- tion starts with
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,]{Figures/DTT/mindx.png}
-\caption{Maximum solvent accessibility map for when E362 is charged (Fig.\ref{fig:dtt_mindx}A; green) and neutral (Fig.\ref{fig:dtt_mindx}B; blue), using minimum protein and average solvent densities over the 64ns MD simulation. Fig.\ref{fig:dtt_mindx}C plots the cross-sectional area along the Z-axis with the mean cross-sectional areas being 318\AA$^2$ for neutral E362 and 217\AA$^2$ for charged E362 (Table \ref{tbl:dtt_pore}).}
+\caption[Solvent accesibility map for Charged E362 DTT Pore]{Maximum solvent accessibility map for when E362 is charged (Fig.\ref{fig:dtt_mindx}A; green) and neutral (Fig.\ref{fig:dtt_mindx}B; blue), using minimum protein and average solvent densities over the 64ns MD simulation. Fig.\ref{fig:dtt_mindx}C plots the cross-sectional area along the Z-axis with the mean cross-sectional areas being 318\AA$^2$ for neutral E362 and 217\AA$^2$ for charged E362 (Table \ref{tbl:dtt_pore}).}
 \label{fig:dtt_mindx}
 \end{figure}
 
