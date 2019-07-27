@@ -1,0 +1,23 @@
+\chapter*{Conclusion}
+In this dissertation, I demonstrate molecular dynamics (MD) simulations can be a useful tool for calculating binding affinities (Chapter \ref{RBFE}), studying the importance of key residues in the membrane-protein insertion process (Chapter \ref{DTT}), and in identifying ligand binding modes (Chapters \ref{UCK2}, \ref{SEH-MD}, \ref{SEH-BLUES}).
+This illustrates that MD simulations can be a powerful tool in the pharmaceutical drug discovery process, particularly, at the lead optimization stage where chemists are often interested in predicting binding affinities and ligand binding modes.
+Throughout the studies presented in this dissertation, I demonstrate that the valuable insights MD simulations can provide are largely hindered by challenges in sampling.
+
+In Chapters \ref{RBFE}, \ref{SEH-MD}, and \ref{SEH-BLUES}, I encounter challenges in sampling which prevent accurate calculation of binding free energies and lead to failures in identifying the crystallographic binding modes.
+From Chapter \ref{RBFE}, I showed that accurate binding free energy calculations largely depended on sufficient sampling of a protein conformational change.
+Only by sampling the protein conformational change--by including it in the enhanced sampling region--was I able to get calculated free energies which no longer depended on the initial configuration.
+From Chapter \ref{SEH-MD}, I demonstrate that even microsecond long MD simulations do not adequately capture binding mode transitions which lead to failures in identifying the true binding modes for fragments which bind to soluble epoxide hydrolase (SEH).
+Then, in Chapter \ref{SEH-BLUES}, I revisit the study from Chapter \ref{SEH-MD} using an enhanced sampling toolkit called BLUES: Binding modes of Ligands Using Enhanced Sampling (Chapter \ref{BLUES}) to sample near the true binding mode which lead to some successes in identifying the true binding modes found by X-ray crystallography.
+
+Future studies could investigate alternative methods for enhancing sampling using the BLUES framework.
+Specifically, BLUES with alternative non-equilibrium candidate Monte Carlo move types, instead of simple random ligand rotations, could be applied to the SEH study detailed in Chapter \ref{SEH-BLUES}.
+One example could be to use a move which would propose moves to directly hop into pre-defined configurations, such as a selection of docked poses.
+This type of move would sample ligand binding modes more efficiently than random ligand rotations as the perturbations to the ligand would be much larger and more directed; whereas with random ligand rotations, simulation time is often wasted on performing small rotations.
+In Chapter \ref{SEH-BLUES}, we restricted ourselves to applying BLUES to small, rigid, and fragment-like molecules as these were more suitable for random rotational moves.
+With a move which would allow directly changing the ligand into pre-defined configurations, we could study larger, more complex, or drug-like molecules which normally result in rejected moves due to large steric clashes via random rotations.
+If such a move could be developed for BLUES and can be applied to accelerate binding mode sampling enough to obtain the correct populations, BLUES can become a powerful tool for the pharmaceutical drug development process.
+Given that binding mode populations are related to the binding free energy, if we can obtain the correct populations from a single BLUES simulation, we could then more efficiently and accurately compute the binding free energies over traditional MD simulations.
+
+
+
+

@@ -1,6 +1,6 @@
 \chapter{Fragment pose prediction using non-equilibrium candidate Monte Carlo and molecular dynamics simulations} \label{SEH-BLUES}
 
-\small{Authors: Nathan M. Lim*, Meghan Osato, Gregory Warren, David L. Mobley}\\
+\small{Authors: Nathan M. Lim, Meghan Osato, Gregory Warren, David L. Mobley}\\
 
 \section{Abstract}
 Part of early stage drug discovery involves determining how molecules may bind to the target protein.
@@ -31,7 +31,7 @@ Especially with FBDD, resolving the binding mode(s) for small molecules and frag
 This often produces x-ray structures which have ambiguous densities around the bound ligand or are generally in too low resolution to definitively resolve the fragment binding mode(s) \cite{domagalski_quality_2014}.
 
 Here, with these ambiguous densities in the crystal structures, computational approaches may aid in the design process by resolving ambiguities through predicting fragment binding modes.
-Computational methods like docking or molecular dynamics (MD) simulations are some common approaches used in helping to determine fragment binding modes \cite{Rocklin2013BlindSite, durrant_computer-aided_2010, sliwoski_computational_2014}.
+Computational methods like docking or molecular dynamics (MD) simulations are some common approaches used in helping to determine fragment binding modes \cite{durrant_computer-aided_2010, sliwoski_computational_2014}.
 If these techniques are accurate enough, computational chemists can apply them to make sense of partial occupancy data and help save structure-based design work which are based on fragments.
 
 Docking is a computationally inexpensive technique which generates a variety of configurations or poses by placing the ligand into a static structure of the apo-protein and subsequently scoring each generated candidate.
@@ -63,7 +63,7 @@ With the BLUES approach, we hypothesize that we will observe better sampling of 
 Previous work using BLUES has shown success in accelerating sampling of ligand binding modes in the simple model systems of toluene and iodotoluene bound to the T4 lysozyme L99A mutant \cite{BLUES_paper}.
 Here, we are interested in applying BLUES to a more complex target with pharmaceutical relevance to evaluate its utility beyond a simple model system.
 
-In this restrospective study, we are interested in using computational methods to identify binding modes for fragments which bind to a protein called soluble epoxide hydrolase (SEH).
+In this retrospective study, we are interested in using computational methods to identify binding modes for fragments which bind to a protein called soluble epoxide hydrolase (SEH).
 SEH has been hypothesized to have therapeutic potential in cardiovascular diseases, inflammatory diseases, and neurological diseases, which has spurred efforts in developing SEH inhibitors.
 Specifically, SEH is involved in the breakdown of epoxyeicosatrienoic acids (EETs), acids with cardiovascular effects such as vasodilation and anti-inflammatory actions.
 Through slowing the degradation of EETS (via SEH inhibition), it has been hypothesized to induce neuroprotective, cardioprotective, and anti-inflammatory effects.
@@ -88,14 +88,14 @@ We aligned the corrected apo SEH structure to the SEH structure provided by Open
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/fullprotein.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/fullprotein.png}
     \caption[SEH Complete Protein]{The complete SEH protein structure with the C-terminal domain (left) and the N-terminal domain (right). The docking site is highlighted (blue) in a mesh representation. The N-terminal domain (right) was removed to reduce computational costs, keeping the C-terminal domain with the defined docking site.}
     \label{fig:full-protein}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/protein-bb-rmsd.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/protein-bb-rmsd.png}
     \caption[SEH Backbone RMSD after N-terminal domain removal]{Calculated RMSD {\AA} of the protein backbone relative to the starting position for 1 microsecond of MD with an average RMSD of 2.1 {\AA} after removal of the N-terminal domain. The protein backbone eventually stabilizes at 3 {\AA} from the starting position. This indicates that removal of the N-terminal domain did not largely affect the protein structure.}
     \label{fig:protein-bb-rmsd}
 \end{figure}
@@ -108,7 +108,7 @@ In Figure \ref{fig:truncated-protein}, we show the entire binding site located i
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/protein-mark.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/protein-mark.png}
     \caption[Truncated SEH Protein Structure]{Truncated SEH protein structure (C-domain only) with the the docking site is highlighted (blue) in a mesh representation. We divide the full cavity into two sub-cavities denoted by left and right. The sub-cavity division is best denoted at the two loops marked as A and B in the figure. In the SEH apo protein structure, point A is closest to residue VAL381 and point B is closest to residue VAL499. We treat each sub-cavity separately in our analysis to better resolve binding modes within each sub-cavity.}
     \label{fig:truncated-protein}
 \end{figure}
@@ -120,8 +120,8 @@ By performing our analysis on each sub-cavity separately, we are better able to 
 \subsection{Ligand preparation and docking}
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/2dmolecules.png}
-    \caption{}
+    \includegraphics[width=\linewidth]{chapter6/Figures/2dmolecules.png}
+    \caption[2D Representatin of SEH Fragments]{2D representation of molecules used in this study which bind to SEH.}
     \label{fig:2dmolecules}
 \end{figure}
 From a set of 47 ligands given to us by our OpenEye Scientific collaborators, we chose to study a smaller subset of 12 ligands (Fig. \ref{fig:2dmolecules}).
@@ -129,14 +129,14 @@ Here, we chose ligands based on the overall size and number of rotatable bonds.
 Particularly, we were interested in only studying small and rigid fragment molecules as we expected to observe more binding mode transitions during our simulations, due to their size and rigidity.
 The molecule set ranged from 133.13 to 156.73 ${\AA^{3}}$ in shape volume with 0 to 1 rotatable bonds.
 
-We used openmoltools (v0.8.1) \cite{} and OpenEye toolkits \cite{openeye_toolkit} to convert each ligand SMILES string to a 3D structure and then we assigned charges using the OEAM1BCC \cite{jakalian_fast_2002}. charging scheme from the OEQUAPAC library \cite{jakalian_fast_2002}. .
+We used openmoltools (v0.8.1) \cite{openmoltools} and OpenEye toolkits \cite{openeye_toolkit} to convert each ligand SMILES string to a 3D structure and then we assigned charges using the OEAM1BCC \cite{jakalian_fast_2002}. charging scheme from the OEQUAPAC library \cite{jakalian_fast_2002}. .
 Then, we generated 1000 conformers of each charged ligand using OpenEye’s OMEGA (20180212) \cite{hawkins_conformer_2010}.
 These conformers were then docked into the SEH apo protein structure using FRED from OEDock(v3.2.0.2), generating 1000 docked poses, and scored with the Chemgauss4 scoring function \cite{mcgann_fred_2011}.
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/topscore.png}
-    \caption{Docking score and the calcualted RMSD {\AA} to the crystallographic binding modes from the top scoring docked poses.}
+    \includegraphics[width=\linewidth]{chapter6/Figures/topscore.png}
+    \caption[Docking score vs RMSD]{Docking score and the calcualted RMSD {\AA} to the crystallographic binding modes from the top scoring docked poses.}
     \label{fig:topscore}
 \end{figure}
 
@@ -154,7 +154,7 @@ We describe the filtering and selection process below.
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1-rmsd_matrix.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1-rmsd_matrix.png}
     \caption[RMSD Similarity Matrix]{RMSD {\AA} similarity matrix from 1000 docked poses for GVG1. Poses which are similar will have a low RMSD represented by darker colors (blue to purple) and poses which are dissimilar will have a high RMSD represented by brighter colors (green to yellow). This shows the raw similarities between docked poses.}
     \label{fig:similarity_matrix}
 \end{figure}
@@ -168,7 +168,7 @@ In other words, when we project into a 2D space, poses which are similar (low RM
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1-mds_6.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1-mds_6.png}
     \caption[Silhouette scoring in MDS-RMSD space]{Left: Silhouette scores from 1000 docked poses for GVG1 using 6 clusters from K-means clustering. Right:MDS-RMSD scatter plot for 1000 docked poses for GVG1 with K-means clustered points using 6 clusters. The cluster centroids are denoted by a number in white circles.}
     \label{fig:mds}
 \end{figure}
@@ -214,7 +214,7 @@ Additionally, if we had pooled together simulation data from both sub-cavities, 
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1-right_imptimescales.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1-right_imptimescales.png}
     \caption[Implied Timescales for GVG1]{Implied timescales plot for GVG1 from our BLUES simulatinos. This plots a series of lag times (picoseconds) versus timescales of various states. The choice of lagtime to discretize our simulation frames was chosen by selecting a lagtime where it begins to become independent of timescales. We chose a lagtime of 400ps.}
     \label{fig:GVG_1-right-imptimescales}
 \end{figure}
@@ -228,14 +228,14 @@ We used lagtimes of 250ps for MD and 400ps for BLUES simulations.
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1-right_c4-tica.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1-right_c4-tica.png}
     \caption[TICA plots for GVG1]{Time-lagged indepdent component analysis (TICA) plot for binding modes of GVG1 located in the right sub-cavity using the first two TICA components. Discrete microstates (i.e. simulation frames are denoted by black Xs. Metastable states sampled during the simulation are indicated in darker colors (blue-purple) in the contours or where Xs are more dense.}
     \label{fig:GVG_1-right-tica}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1-right-pcca.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1-right-pcca.png}
     \caption[PCCA plot for GVG1]{TICA plot for binding modes of GVG1 located in the right sub-cavity using the first two TICA components. Each X denotes a discrete microstate (i.e. simulation frame). Each microstate has been assigned to a macrostate by PCCA which define our metastable binding modes sampled during our simulation. We find 3 states (red, green ,blue) or binding modes sampled from simulations of GVG1 in the right sub-cavity.}
     \label{fig:GVG_1-right-pcca}
 \end{figure}
@@ -253,7 +253,7 @@ In Fig \ref{fig:GVG1_c4-md}, we plot the RMSD of the ligand heavy atoms relative
 Specifically, we compute the ligand heavy atom RMSD to the 100 representative microstates (simulation frames) belonging to each macrostate; then, assign it to the macrostate which minimizes the RMSD.
 We can then compute the populations or amount of simulation time spent within each binding mode by counting the membership assignment of the simulation frames.
 
-\subsection {Crystallographic Binding Mode Predictions}
+\subsection{Crystallographic Binding Mode Predictions}
 To evaluate the ability to predict dominant binding modes as determined by crystallography using docking, MD, or BLUES, we report two RMSD ({\AA}) metrics: an `averaged' RMSD and the minimum RMSD.
 Here, our reported average RMSD is calculated by averaging over 10,000 randomly drawn (with replacement) values from the remaining (MDS-RMSD filtered) docked poses or 100 simulation frames which we saved to represent each binding mode.
 We believe this `average' RMSD best represents random selection of a single docked pose from a pool of poses or a single frame from the whole simulation to compare against the crystallographic structure.
@@ -282,7 +282,7 @@ The minimum RMSD reflects the performance which would be expected if one could d
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/averages.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/averages.png}
     \caption[Average RMSD]{Minimum/Average RMSD for each method: docking (pink/red), MD (lime/green), and BLUES (cyan/blue) for all ligands in this study. Dashed line at 2 {\AA} represents successful predictions and dotted line at 4 {\AA} represents close predictions. This reports the averaged RMSD from all 12 ligands used in this study.}
     \label{fig:averages}
 \end{figure}
@@ -300,13 +300,30 @@ This suggests that BLUES does better than MD and docking at sampling near the cr
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/singlebm.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/singlebm.png}
     \caption[Single Binding Mode RMSD]{Left: Calculated RMSDs (minimum/average) relative to the crystallographic ligand binding mode and binding modes from docking (pink/red), MD (lime/green), and BLUES (cyan/blue) simulations for ligands with a single binding mode. Successful prediction in binding mode is judged to be less than or equal to 2 {\AA} (black dashed horizontal line). Right: Averaged RMSD for each method: docking, MD, and BLUES for ligands with a single binding mode. Considering the minimum RMSD averaged across ligands with a single binding mode, MD and BLUES can both make predictions with 2{\AA} to the true binding mode.}
     \label{fig:singlebm}
 \end{figure}
 
+\begin{table}[]
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+\rowcolor[HTML]{9B9B9B} 
+{\color[HTML]{333333} \textbf{Ligand}} & {\color[HTML]{333333} \textbf{Side}} & {\color[HTML]{333333} \textbf{MinDock}} & {\color[HTML]{333333} \textbf{AvgDock}} & {\color[HTML]{333333} \textbf{MinMD}} & {\color[HTML]{333333} \textbf{AvgMD}} & {\color[HTML]{333333} \textbf{MinBLUES}} & {\color[HTML]{333333} \textbf{AvgBLUES}} \\ \hline
+\textbf{4XH}                           & R                                    & 3.6                                     & 5.4                                     & 1.3                                   & 4                                     & 1.1                                      & 4.3                                      \\ \hline
+\textbf{6N6}                           & L                                    & 4.4                                     & 5.7                                     & 3.3                                   & 6.7                                   & 1.8                                      & 4.6                                      \\ \hline
+\textbf{8NY}                           & R                                    & 3.1                                     & 5.1                                     & 0.6                                   & 1.9                                   & 0.5                                      & 1.5                                      \\ \hline
+\textbf{JF6}                           & L                                    & 4.5                                     & 6.3                                     & 3.6                                   & 9.1                                   & 1.5                                      & 6.6                                      \\ \hline
+\textbf{KJU}                           & R                                    & 2.9                                     & 5.3                                     & 1.3                                   & 3.8                                   & 0.8                                      & 3.8                                      \\ \hline
+\textbf{ONR}                           & R                                    & 3                                       & 4.1                                     & 0.8                                   & 2.6                                   & 1.1                                      & 3.8                                      \\ \hline
+\textbf{TGX}                           & R                                    & 2.3                                     & 3.7                                     & 0.4                                   & 2.5                                   & 0.4                                      & 1.7                                      \\ \hline
+\end{tabular}
+\caption[Single Binding Mode RMSDs]{Minimum and average RMSDs {\AA} from docking, MD, and BLUES for ligands with a single crystallographic binding mode. The `Side' column denotes which sub-cavity the crystallographic binding mode was located in.}
+\label{table:singlebm}
+\end{table}
+
 Molecules with a single crystallographic binding mode were 4XH, 6N6, 8NY, JF6, KJU, ONR, and TGX.
-Calculated RMSDs are measured in units of  {\AA} and are shown in Figure \ref{fig:singlebm}.
+Calculated RMSDs are measured in units of {\AA} and are shown in Figure \ref{fig:singlebm} and Table \ref{table:singlebm}.
 Docking had minimum RMSDs (pink) of 3.6, 4.4, 3.1, 4.5, 2.9, 3, and 2.3 and average RMSDs (red) of 5.4, 5.7, 5.1, 6.3, 5.3, 4.1, and 3.7.
 The minimum RMSDs (lime) from the highest populated binding mode sampled during our MD simulations were 1.3, 3.3, 0.6, 3.6, 1.3, 0.8, and 0.4 with average RMSDs (green) of 4.0, 6.7, 1.9, 9.1, 3.8, 2.6, and 2.5.
 From the most populated binding mode sampled during our BLUES simulations, the minimum RMSD (cyan) for each molecule was 1.1, 1.8, 0.5, 1.5, 0.8, 1.1, and 0.4 with average RMSDs (blue) of 4.3, 4.5, 1.5, 6.6, 3.7, 3.8, and 1.7.
@@ -325,16 +342,51 @@ On the other hand, BLUES may be able to make predictions which are within 2 {\AA
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/multibm.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/multibm.png}
     \caption[Multiple Binding Mode RMSDs]{Left: Calculated RMSDs (minimum/average) relative to the crystallographic ligand binding mode and binding modes from docking (pink/red), MD (lime/green), and BLUES (cyan/blue) simulations for ligands with a single binding mode. Successful prediction in binding mode is judged to be less than or equal to 2 {\AA} (black dashed horizontal line). Right: Averaged RMSDs for each method: docking, MD, and BLUES for ligands with a single binding mode. Considering the minimum RMSD averaged across ligands with a single binding mode, BLUES can make predictions with 2{\AA} to the true binding mode.}
     \label{fig:multibm}
 \end{figure}
 
-Molecules with multiple binding modes were 6TZ(1/2), GVG(1/2), and KUF which had 3, 5, and 6 crystallographic binding modes, respectively.
+\begin{table}[]
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+\rowcolor[HTML]{9B9B9B} 
+\textbf{Ligand} & \textbf{Side} & \textbf{MinDock} & \textbf{AvgDock} & \textbf{MinMD} & \textbf{AvgMD} & \textbf{MinBLUES} & \textbf{AvgBLUES} \\ \hline
+6TZ1-0          & L             & 4                & 9.1              & 8              & 9.8            & 2.4               & 7.1               \\ \hline
+6TZ1-1          & R             & 4.7              & 7.9              & 3.5            & 5.8            & 3.2               & 6.2               \\ \hline
+6TZ1-2          & L             & 5.1              & 6.4              & 3.2            & 5.5            & 3                 & 5.6               \\ \hline
+6TZ2-0          & L             & 3.9              & 7                & 4.4            & 9.7            & 3.2               & 8.9               \\ \hline
+6TZ2-1          & R             & 6.2              & 6.2              & 3.5            & 5.7            & 2.5               & 6.3               \\ \hline
+6TZ2-2          & L             & 4.3              & 5.5              & 3.8            & 7.1            & 3.3               & 5.8               \\ \hline
+GVG1-0          & R             & 3.7              & 5.5              & 1.9            & 4.9            & 1.8               & 4.1               \\ \hline
+GVG1-1          & R             & 4.3              & 5.9              & 1.6            & 4.7            & 2.8               & 4.9               \\ \hline
+GVG1-2          & L             & 4.3              & 6.2              & 0.9            & 2.6            & 1.2               & 2.9               \\ \hline
+GVG1-3          & L             & 1.8              & 6.3              & 0.8            & 2.3            & 0.8               & 3.3               \\ \hline
+GVG1-4          & L             & 4.9              & 6.6              &  NF            & NF             & 2.9               & 6.2               \\ \hline
+GVG2-0          & R             & 4.4              & 6.1              & 0.7            & 1.7            & 1.3               & 3.2               \\ \hline
+GVG2-1          & R             & 1.8              & 4.8              & 3.4            & 4.3            & 2.2               & 4.2               \\ \hline
+GVG2-2          & L             & 4.4              & 6.5              & 5.3            & 8.8            & 0.6               & 3.8               \\ \hline
+GVG2-3          & L             & 2.2              & 6.9              & 2.1            & 3.7            & 2                 & 4.8               \\ \hline
+GVG2-4          & L             & 4.8              & 6.7              & 3              & 5.6            & 2.4               & 6                 \\ \hline
+KUF2-0          & R             & 4.9              & 6.1              & 2.4            & 4.3            & 2.6               & 4.7               \\ \hline
+KUF2-1          & R             & 3.8              & 4.3              & 4              & 4.7            & 2.2               & 4.7               \\ \hline
+KUF2-2          & R             & 2.1              & 3.6              & 2.3            & 4.5            & 1.6               & 4                 \\ \hline
+KUF2-3          & L             & 4                & 5.1              & 1.6            & 3.1            & 1.1               & 5                 \\ \hline
+KUF2-4          & L             & 4.5              & 6                & 4.3            & 6.5            & 3                 & 5.2               \\ \hline
+KUF2-5          & L             & 6.1              & 6.6              & 4.4            & 7.4            & 1.9               & 6                 \\ \hline
+\end{tabular}
+\caption[Multiple Binding Mode RMSDs]{Minimum and average RMSDs {\AA} from docking, MD, and BLUES for ligands with multiple crystallographic binding modes. The `Side' column denotes which sub-cavity the crystallographic binding mode was located in. NF (Not Found) denotes the binding mode not being sampled such as in the case of GVG1-4 from MD simulations.}
+\label{table:multibm}
+\end{table}
+
+
+Molecules with multiple binding modes were 6TZ(1/2), GVG(1/2), and KUF2 which had 3, 5, and 6 crystallographic binding modes, respectively.
 We note that simulations of 6TZ(1/2) or GVG(1/2) are simply the same molecules but different tautomers.
 We consider these separately as we did not know prior, which were the correct tautomers to be simulating.
 We compare binding modes sampled in simulations of 6TZ(1/2) and GVG(1/2) to the same crystallographic structures, respectively.
-The RMSD for each molecule to each crystallographic structure is denoted as XXXX-#; for example, 6TZ1-(0,1,2) is the comparison from the simulations if 6TZ1 against the 3 crystallographic binding structures.
+The RMSD for each molecule to each crystallographic structure is denoted with a 3 letter code, a number to denote the tautomer, followed by a dash and a number (i.e. $XXX\#-\#$) 
+For example, 6TZ1-(0,1,2) is the comparison from the simulations of 6TZ1 against the 3 crystallographic binding structures; whereas 6TZ2-(0,1,2) refers to the comparison from simulations of 6TZ2.
+The minimum and average RMSDs are shown in Figure \ref{fig:multibm} and Table \ref{table:multibm}.
 
 6TZ1 had 3 crystallographic binding modes with minimum RMSDs of 4.0, 4.7, and 5.1 from docking; 8.0, 3.5, and 3.2 from MD; and 2.4, 3.2, and 3.0 from BLUES.
 The average RMSDs were reported to be 9.1, 7.9, and 6.4 from docking; 9.8, 5.8, and 5.5 from MD; and 7.1, 6.2, and 5.6 from BLUES.
@@ -373,10 +425,11 @@ With BLUES, one may be able to make predictions which are within 2 {\AA} as we o
 
 \begin{figure}[!tbp]
   \centering
-  \subfloat{\includegraphics[width=0.5\textwidth]{chapter6/Figures/JF6_1-poses.png}\label{fig:JF6-poses}}
+  \subfloat{\includegraphics[width=0.49\textwidth]{chapter6/Figures/JF6_1-poses.png}}
   \hfill
-  \subfloat{\includegraphics[width=0.5\textwidth]{chapter6/Figures/JF6_1-xtal.png}\label{fig:JF6-xtal}}
+  \subfloat{\includegraphics[width=0.49\textwidth]{chapter6/Figures/JF6_1-xtal.png}}
   \caption[JF6 docked poses and crystal structure]{Left: Docked pose of JF6 (pink) and simulation frames from MD (lime) and BLUES (cyan) which minimizes the RMSD to the crystallographic structure. This binding mode for JF6 was located in the left sub-cavity. The minimum RMSDs were 4.5, 3.6, and 1.5 for docking, MD, and BLUES, respectively. Right: BLUES (cyan) simulation frame with the crystallographic binding mode (gray) for molecule JF6. Nearby residues TYR117(?) and MET243(?) are shown.}
+  \label{fig:JF6-poses}
 \end{figure}
 
 When considering the minimum RMSDs, for cases with a single crystallographic binding mode, we see that both MD and BLUES are within 2 {\AA} of the crystallographic binding mode.
@@ -389,7 +442,7 @@ Following that, we will present our findings from 8NY where both BLUES and MD su
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/JF6_c4-prod00.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/JF6_c4-prod00.png}
     \caption[JF6 MD Populations]{Top: 250ns MD populations (\% simulation time) of 2 (red/green) binding modes sampled for ligand JF6. Bottom: RMSD of ligand JF6 relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in. We note that the red samples correspond to an unbound state. Thus, this shows that with MD we only sample 1 binding mode (green).}
     \label{fig:JF6_c4-md}
 \end{figure}
@@ -401,7 +454,7 @@ For the remainder of the 1 microsecond simulation, JF6 remains trapped in the gr
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/JF6_c4-14607404.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/JF6_c4-14607404.png}
     \caption[JF6 BLUES Populations]{Top: 200ns BLUES populations (\% simulation time) of 5 (red, yellow, green, cyan, blue) binding modes sampled for ligand JF6. Bottom: RMSD of ligand JF6 relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in. This shows BLUES can sample far more binding modes than MD in a shorter timeframe. Note: we see no red bar due to extremely low sampling during the simulation.}
     \label{fig:JF6_c4-blues}
 \end{figure}
@@ -416,8 +469,8 @@ Regardless, this shows that our BLUES approach does facilitate sampling of more 
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/8NY_c0-prod00.png}
-    \caption[8NY MD populations]{Top: 250ns MD populations (\% simulation time) of 3 (red, green, blue) binding modes sampled for ligand 8NY. Bottom: RMSD of ligand 8NY relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
+    \includegraphics[width=\linewidth]{chapter6/Figures/8NY_c0-prod00.png}
+    \caption[8NY MD Populations]{Top: 250ns MD populations (\% simulation time) of 3 (red, green, blue) binding modes sampled for ligand 8NY. Bottom: RMSD of ligand 8NY relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:8NY_c0-md}
 \end{figure}
 
@@ -427,8 +480,8 @@ Despite an accurate prediction, we highlight that we primarily only see stable s
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/8NY_c0-14708877.png}
-    \caption{Top: 200ns BLUES populations (\% simulation time) of 3 (red, green, blue) binding modes sampled for ligand 8NY. Bottom: RMSD of ligand 8NY relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
+    \includegraphics[width=\linewidth]{chapter6/Figures/8NY_c0-14708877.png}
+    \caption[8NY BLUES Populations]{Top: 200ns BLUES populations (\% simulation time) of 3 (red, green, blue) binding modes sampled for ligand 8NY. Bottom: RMSD of ligand 8NY relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:8NY_c0-blues}
 \end{figure}
 
@@ -456,7 +509,7 @@ For cases with multiple binding modes, we believe sampling of more binding mode 
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1-poses.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1-poses.png}
     \caption[GVG1 docked poses]{5 crystallographic binding modes (gray) for molecule GVG1 overlaid with the starting poses from docking (pink).}
     \label{fig:GVG1-poses}
 \end{figure}
@@ -467,7 +520,7 @@ This is an atypical case, where much like we have shown previously, BLUES facili
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1_c4-md.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1_c4-md.png}
     \caption[GVG1 MD Populations]{Top: 1 microsecond MD populations (\% simulation time) of 3 (red, green, blue) binding modes sampled for ligand GVG1. Bottom: RMSD of ligand GVG1 relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:GVG1_c4-md}
 \end{figure}
@@ -479,7 +532,7 @@ On the other hand, in the right sub-cavity (Fig. \ref{fig:GVG1-xtal}), we were a
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1-poses.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1-poses.png}
     \caption[GVG1 crystallographic binding modes]{2 crystallographic binding modes (gray/white) of GVG1 found in the right sub-cavity, overlaid with one docked pose (pink) used as our simulation starting point.}
     \label{fig:GVG1-xtal}
 \end{figure}
@@ -493,7 +546,7 @@ Since we observed sampling of additional binding modes from our simulations star
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1_c4-14650607.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1_c4-14650607.png}
     \caption[GVG1 (c4) BLUES Populations]{Top: 200ns BLUES population (\% simulation time) of 1 (blue) binding mode sampled for ligand GVG1 starting from docked pose c4. Bottom: RMSD of ligand GVG1 relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:GVG1_c4-blues}
 \end{figure}
@@ -506,7 +559,7 @@ When considering the minimum RMSD, we find that with BLUES, we are able to ident
 
 \begin{figure}
     \centering
-    \includegraphics{chapter6/Figures/GVG_1_c3-14709106.png}
+    \includegraphics[width=\linewidth]{chapter6/Figures/GVG_1_c3-14709106.png}
     \caption[GVG1 (c3) BLUES Populations]{Top: 200ns BLUES populations (\% simulation time) of 2 (green, blue) binding mode sampled for ligand GVG1 starting from docked pose c3. Bottom: RMSD of ligand GVG1 relative to starting positions over time. Each time point is colored according to the binding mode the ligand is in.}
     \label{fig:GVG1_c3-blues}
 \end{figure}
@@ -540,5 +593,5 @@ Ultimately, enhanced sampling via BLUES lead to an improvement in finding the cr
 \section{Contributors}
 The authors would like to acknowledge the contributions from OpenEye Scientific Software: Christopher Baylyl for administering the blind challenge, Gaetano Calabro for providing us work flows for running our simulations and Gregory Warren for curating and providing us the crystal structures.
 
-\Section{Acknowledgements}
+\section{Acknowledgements}
 DLM appreciates financial support from the National Institutes of Health (1R01GM108889-01 and 1R01GM124270-01A1). Financial support for N.M.L. was provided by the National Science Foundation Graduate Research Fellowship (DGE-1321846)

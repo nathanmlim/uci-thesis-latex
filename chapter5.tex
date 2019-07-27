@@ -129,7 +129,7 @@ The 19 molecules (Fig. \ref{fig:2D-molecules}) were docked into the binding site
 In Figure \ref{fig:sEH-ribbon}, we divide the SEH binding site into two general regions (left and right) which are separated by two loops which form a cleft in the center \ref{fig:sEH-ribbon}.
 At least one study on SEH has suggested that the left region of the binding site serves as a point of entry/exit to the catalytic domain on the right end of the binding side\cite{lotz_unbiased_2018}.
 
-Using Openmoltools (0.8.3)\cite{eastman_openmm_2017} and OpenEye toolkits, each ligand's SMILES string was used to generate a 3D structure and assigned charges through the AM1BCCSym charging scheme via QUACPAC 2017.10.1 \cite{jakalian_fast_2002}. 
+Using Openmoltools (0.8.3)\cite{openmoltools} and OpenEye toolkits, each ligand's SMILES string was used to generate a 3D structure and assigned charges through the AM1BCCSym charging scheme via QUACPAC 2017.10.1 \cite{jakalian_fast_2002}. 
 Then, we used OpenEye's OMEGA (20180212) to generate up to 1000 conformers for each ligand to be docked and scored\cite{hawkins_conformer_2010}.
 The ligands (with their multiple conformers) were docked--into the docking region defined by Warren--using FRED through OEDock version 3.2.0.2. and then scored by the Chemgauss4 scoring function\cite{mcgann_fred_2011}.
 
@@ -515,10 +515,8 @@ In this study, we show that even when simulating small fragment-like molecules i
 This illus rates that convergence, solely with MD simulations, is very slow and highlights the necessity of using an enhanced sampling technique to adequately sample and determine ligand binding modes.
 We plan to explore these issues in future work.
 
-% \section{Contributors}
-% Christopher Bayly -- OpenEye Scientific, provided MD Floes
-% Gaetano Calabro -- OpenEye Scientific, provided MD Floes
-% Greg Warren -- OpenEye Scientific,  curated crystal structures
+\section{Contributors}
+The authors would like to acknowledge the contributions from OpenEye Scientific Software: Christopher Baylyl for administering the blind challenge, Gaetano Calabro for providing us work flows for running our simulations and Gregory Warren for curating and providing us the crystal structures.
 
 \section{Acknowledgements}
 DLM appreciates financial support from the National Institutes of Health (1R01GM108889-01 and 1R01GM124270-01A1). Financial support for N.M.L. was provided by the National Science Foundation Graduate Research Fellowship (DGE-1321846)

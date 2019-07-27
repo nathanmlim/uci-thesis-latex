@@ -1,60 +1,63 @@
 \chapter*{Introduction} \label{introduction}
 
 In recent years, molecular dynamics (MD) simulations has become an increasingly valuable tool in the pharmaceutical drug discovery process.
-With the capability of providing a dynamic and complete atomistic viewpoint of a protein and bound ligand, it is no surprise that MD simulations are becoming routine in the development process.
+With the capability of providing a dynamic and complete atomistic viewpoint of a protein and bound ligand, it is no surprise that MD simulations are emerging as a powerful tool in the drug development process.
 Using MD simulations, chemists can gain knowledge of a ligand's binding mode(s), dynamics, and even binding affinity--making it an extremely powerful tool.
-But, the accuracy in computed binding affinities and predictive capabilities for identifying ligand binding modes hinges on sufficient sampling of all relevant confirmations and biological motions. 
+But, the accuracy in computed binding affinities and capabilities for identifying ligand binding modes hinges on sufficient sampling of all relevant confirmations and biological motions. 
 
 Often, sufficient sampling requires running extremely long simulations in order to capture biological motions as MD simulations resolve dynamics by taking small discrete timesteps (i.e 1-4 femtoseconds); whereas, biological motions often occur at the millisecond timescale.
+This means MD simulations must take millions of femtosecond timesteps in order to capture relevant conformational changes which occur on timescales which are orders of magnitude higher; a problem which is often referred to as the `timescale gap'.
 Before the development of general purpose-graphic processing unit (GP-GPU) computing, MD simulations were largely bounded to simulations at the nanosecond timescale, but now microsecond timescales are becoming much more feasible with the use of GPUs.
 Specialized hardware, like ANTON, has even been developed to make millisecond timescale simulations a reality.
-Regardless, challenges in sampling of biological motions remains a challenge in the field as MD simulation often remained trapped in local energy minima--requiring longer timescales to escape before a new state can even be sampled.
+Regardless, challenges in proper sampling remains a problem in the field, as MD simulation often remained trapped in local energy minima--requiring longer timescales to escape before a new state can even be sampled.
+If challenges in sampling can be addressed, MD simulations will provide even more utility toward drug discovery efforts by providing a means for computing binding affinities and predicting ligand binding modes.
 
 Throughout this dissertation, I present my work which explores the use of MD simulations for the purpose of binding affinity calculations (Chapter \ref{RBFE}), studying membrane-protein insertion (Chapter \ref{DTT}), and ligand binding mode predictions (Chapter \ref{UCK2}, \ref{SEH-MD}, \ref{SEH-BLUES}).
-Given, that MD simulations face challenges in sampling, I will also present my work in developing a software package which aims to accelerating sampling in ligand binding modes (Chapter \ref{BLUES}).
+Given that MD simulations face challenges in sampling, I will also present my work in developing a software package which aims to accelerating sampling in ligand binding modes and provides a foundation for enhancing sampling in a variety of ways (Chapter \ref{BLUES}).
 
 \section*{Summary}
-Alchemical free energy perturbations (FEP) is one approach for computing binding affinities from MD simulations.
+One common approach to compute binding affinities from MD simulations is a technique called alchemical free energy perturbations (FEP).
 This approach works by `alchemically' (i.e. non-physical) modifying the ligand forces--taking it through a non-physical pathway--and computing the change in free energy throughout the process.
-When combined with an enhanced sampling technique like replica exchange with solute tempering (REST), using an FEP+REST type of approach can provide accurate predictions in binding affinities.
+When combined with an enhanced sampling technique like replica exchange with solute tempering (REST), using a FEP+REST type of approach can provide accurate predictions in binding affinities.
 Recently, this approach has been demonstrated to be successful in accurate calculations of binding free energies at large scales \cite{FEPplus}.
-In Chapter \ref{RBFE}, I explore how sensitive calculated free energies are to small conformational changes in the protein using a simple model system with a congeneric series of small ligands.
-In this study, I calculate relative binding free energies (RBFE) using the FEP+REST approach between the series of ligands bound to the commonly used model system of T4 lysozyme L99A.
-Despite using an enhanced sampling approach, modifications to the enhanced sampling region (i.e. including a helix by the binding site) were required to get accurate free energy predictions which no longer depended on the starting conformation.
+In Chapter \ref{RBFE}, I explore how sensitive calculated free energies are to small conformational changes in the protein using a simple model system with a congeneric series of small ligands \cite{Merski2015}.
+In this study, I calculate relative binding free energies (RBFE) using the FEP+REST approach between the series of ligands bound to the commonly used model system called T4 lysozyme L99A \cite{lim2016sensitivity}.
+Despite using an enhanced sampling approach, modifications to the enhanced sampling region (i.e. including a helix by the binding site) were required to get free energy calculations which no longer depended on the starting conformation.
 Here, my findings demonstrates the importance of sampling protein conformational changes in order to get accurate calculated binding free energies.
 
-Before investigating ways to improve sampling with MD simulations, in Chapter \ref{DTT}, I use alchemical FEP calculations to study the membrane-protein insertion free energy of from diptheria toxin T domain (DTT).
+To demonstrate other ways MD simulations can be used, I use alchemical FEP calculations to study the membrane-protein insertion free energy of from diptheria toxin T domain (DTT) in Chapter \ref{DTT}. 
 This particular protein plays a role in the delivery of the diptheria toxin by facilitating the formation of a pore once inserted into a membrane.
 In this study, I compute the differences in free energies when residue E362, located on the pore of the translocation domain, is charged and neutral via alchemical FEP calculations.
-From the calculated free energies, I aimed to gain some insight on the importance of the particular residue and its charge state during the membrane insertion process.
-Here, I found that the neutral state of the residue was significantly more favorable over the charged state during the insertion process and discovered the neutral state of the protein also facilitated formation of a larger pore--which supported experimental studies.
+From the calculated free energies, I provide some insight on the importance of the particular residue E362 and its charge state during the membrane insertion process.
+Here, I found that the neutral state of the residue was significantly more favorable over the charged state during the insertion process and discovered the neutral state of the protein also facilitated formation of a larger pore--which supported experimental studies \cite{Kyrychenko2018}.
 
-From Chapter \ref{RBFE}, I learned how critical it was to properly sample conformational states if I wanted to achieve accurate binding free energies.
-Thus, in Chapter \ref{BLUES}, I co-developed a software package which aims to accelerate sampling of ligand binding modes.
-This software package is called BLUES: Binding modes of Ligands Using Enhanced Sampling, which uses a hybrid simulation approach that combines non-equilbirum candidate Monte Carlo (NCMC) move proposals with MD simulations.
+From Chapter \ref{RBFE}, I showed how critical it was to properly sample conformational states if I wanted to achieve accurate binding free energies.
+Thus, in Chapter \ref{BLUES}, I present my work in co-developing a software package which aims to accelerate sampling of ligand binding modes and provide the framework for enhancing sampling in other ways.
+This software package is called BLUES: Binding modes of Ligands Using Enhanced Sampling \cite{BLUESgithub}, which uses a hybrid simulation approach that combines non-equilbirum candidate Monte Carlo (NCMC) \cite{ncmc_paper} move proposals with MD simulations.
 In this framework, we first implemented random rotational move proposals which are performed on the bound ligand.
-By randomly rotating the ligand during simulations, the aim is to search for and sampling other binding modes; whereas, MD simulations often remain trapped in their initial binding mode.
+Here, the goal is to search for and propose moves to alternative binding modes via randomly rotating the ligand during simulation; thereby, accelerating the sampling of ligand binding modes over traditional MD.
+In our first BLUES study, we demonstrate the NCMC+MD approach can be successfully used to accelerate binding mode sampling in a simple model system, toluene bound to T4 lysozyme L99A \cite{BLUESpaper}.
 In Chapter \ref{BLUES}, I discuss how to install and use the software, detail the functions and modules in the codebase, and provide an overview on design principles I had implemented to ensure the software can easily be maintained and extended beyond our initial implementation.
+From our initial implementation (using random ligand rotations), studies have been done which use BLUES to identify the various binding modes of caffeine \cite{BLUEScaffeine}.
+In Chapter \ref{SEH-BLUES}, I also present my work in applying BLUES (using random ligand rotations) to identify ligand binding modes for a series of fragments.
 From my extensible design, several projects in the Mobley lab were able to use the BLUES framework and implement new NCMC move types beyond simple ligand rotations.
-Some of these moves include sidechain rotations, ligand torsional rotations, and localized water motions which all enhance sampling in different ways than our initial implementation.
-An application of the BLUES software for the purpose of predicting ligand binding modes is presented in Chapter \ref{SEH-BLUES}.
+Some of these moves include sidechain rotations \cite{burley2019enhancing}, ligand torsional rotations, and localized water motions which all enhance sampling in different ways than our initial implementation.
 
-In the interest of using MD simulations for predicting ligand binding modes, in Chapter \ref{UCK2}, I present my work where I use MD simulations to identify ligand binding modes for various RNA nucleoside analogs which bind to the protein uridine cytidine kinase 2 (UCK2).
+In the interest of using MD simulations for predicting ligand binding modes, in Chapter \ref{UCK2}, I present work where I use MD simulations to identify ligand binding modes for various RNA nucleoside analogs which bind to the protein uridine cytidine kinase 2 (UCK2) \cite{uck2paper}.
 The Spitale lab had developed novel RNA nucleoside analogs which would become incorporated into the nascent RNA strands produced from UCK2.
-They were interested in gaining some structural insights on how their analogs bound in the binding site of UCK2, in comparison to the endogenous ligand.
+They were interested in gaining some structural insights on how their analogs would bind, in comparison to the endogenous ligand, within the binding site of UCK2, 
 In this study, I utilize docking and molecular dynamics (MD) simulations to validate their hypothesis of their nucleoside analogs binding in the same binding mode as the endogenous ligand, cytidine, as well as uncover a novel binding mode, representative of the post-catalytic state of UCK2.
-The predicted binding modes I had found via MD simulations were later validated by x-ray crystallography.
-From this study, I developed a protocol to define the metastable binding modes sampled during the MD simulations using Markov State Models (MSM) construction and clustering.
-Additionally, I demonstrate that computational methods like MD simulations can indeed be used to predict binding modes for this system.
+The predicted binding modes for their RNA nucleoside analogs that I had found via MD simulations were later validated by obtaining X-ray crystallographic structures of the protein-ligand complexes.
+For this system, I demonstrate that a computational method like MD simulations can indeed be used to predict binding modes. 
 
-In Chapter \ref{SEH-MD}, I present my work in using microsecond long MD simulations to predict binding modes for fragments which bind to a protein called soluble epoxide hydrolase (SEH).
-Posed a retrospective blinded study, our collaborators at OpenEye Scientific Software provided us with a series of fragments and the SEH binding site to dock to.
-Here, we use a combined docking-MD simulation approach and investigate if enough sampling of ligand binding modes can occur at the microsecond timescale and if the populations (i.e. \% simulation time) of the binding modes found would help us identify the dominant (crystallographic) binding mode and any additional binding modes. 
-From this study, we found that even with microsecond long MD simulations, we did not observe sufficient transitions between binding modes and failed to identify the crystallographic binding modes.
+Continuing to apply MD simulations for predicting ligand binding modes, in Chapter \ref{SEH-MD}, I present my work in using microsecond long MD simulations to identify binding modes for fragments which bind to a protein called soluble epoxide hydrolase (SEH).
+Posed as a retrospective blinded study, our collaborators at OpenEye Scientific Software provided us with a series of fragments and the SEH binding site to dock to.
+Here, I use a combined docking-MD simulation approach and investigate if enough sampling of ligand binding modes can occur at the microsecond timescale and if the populations (i.e. \% simulation time) of the binding modes sampled would help us identify the dominant (crystallographic) binding mode and any additional binding modes. 
+From this study, I found that even with microsecond long MD simulations, I could not sufficiently sample binding modes and ultimately, failed to identify the crystallographic binding modes.
 This failure highlighted the need to use an enhanced sampling technique so as to acquire better sampling of ligand binding modes.
 
-To address the failures from Chapter \ref{SEH-MD}, I revisit the study using the (NCMC+MD) BLUES approach for predicting the binding modes for the SEH fragments in Chapter \ref{SEH-BLUES}.
+To address the failures from Chapter \ref{SEH-MD}, I revisit the study using the (NCMC+MD) BLUES approach for predicting the SEH fragment binding modes in Chapter \ref{SEH-BLUES}.
 Here, I investigate if BLUES can be applicable beyond a simple model system, like T4 lysozyme L99A, and apply it to a system with pharmaceutical relevance--SEH.
-Using BLUES, I observed significantly better sampling in ligand binding modes than with microsecond long MD simulations, which lead to better predictions of the SEH fragment binding modes.
+Using BLUES, I observed significantly better sampling in ligand binding modes than with microsecond long MD simulations, which lead to higher success in sampling near the crystallographic binding modes.
 From this study, I demonstrate that BLUES can indeed be used to accelerate binding mode sampling to more complex systems and illustrate that it can potentially be used as a tool for predicting fragment binding modes.
 

@@ -57,6 +57,12 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
 % plainpages=false fixes the "duplicate ignored" error with page counters
 % Set pdfborder to 0 0 0 to disable colored borders around PDF hyperlinks
 \usepackage[plainpages=false,pdfborder={0 0 0}]{hyperref}
@@ -97,7 +103,7 @@
 \hypersetup{
 	pdftitle={Molecular simulations and binding free energy calculations for drug discovery},
 	pdfauthor={Nathan M. Lim},
-	pdfsubject={Pharmaceutical Sciences},
+	pdfsubject={Pharmacological Sciences},
 	colorlinks,
     linkcolor={black!50!black},
     citecolor={blue!80!black},
@@ -137,7 +143,7 @@
     \include{chapter4/distance}
 \include{chapter5}
 \include{chapter6}
-%\include{conclusion}
+\include{chapter7}
 
 % These commands fix an odd problem in which the bibliography line
 % of the Table of Contents shows the wrong page number.
@@ -146,7 +152,7 @@
 
 % "References should be formatted in style most common in discipline",
 % abbrv is only a suggestion.
-\bibliographystyle{abbrv}
+\bibliographystyle{ieeetr}
 \bibliography{references}
 
 % The Thesis Manual says not to include appendix figures and tables in
